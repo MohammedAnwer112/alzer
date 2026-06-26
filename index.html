@@ -1,1191 +1,1439 @@
+
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>محل الزرقاني</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
 :root{
-  --bg:#0f1117;--bg2:#161b25;--panel:#1e2535;--panel2:#252d3d;
-  --border:#2e3a4e;--text:#e8edf5;--text2:#7a8fa8;
-  --accent:#e07b2a;--accent2:#f59c4e;
-  --green:#27ae60;--green2:#2ecc71;
-  --red:#c0392b;--red2:#e74c3c;
-  --blue:#2471a3;--blue2:#3498db;
-  --gold:#d4ac0d;--gold2:#f1c40f;
-  --shadow:rgba(0,0,0,.35);
+  --bg:#0d1117;--bg2:#161c27;--panel:#1c2333;--panel2:#232e42;
+  --border:#2d3a50;--text:#e6ecf5;--text2:#7388a0;
+  --accent:#d4741e;--accent2:#f0944a;
+  --green:#229954;--green2:#27ae60;--greenlite:rgba(34,153,84,.15);
+  --red:#a93226;--red2:#e74c3c;--redlite:rgba(169,50,38,.15);
+  --blue:#1f618d;--blue2:#2e86c1;--bluelite:rgba(31,97,141,.2);
+  --gold:#b7950b;--gold2:#f1c40f;--goldlite:rgba(183,149,11,.15);
+  --purple:#7d3c98;--purple2:#9b59b6;
+  --shadow:rgba(0,0,0,.4);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;direction:rtl;overflow-x:hidden;}
+input,select,textarea,button{font-family:'Cairo',sans-serif;}
 
-/* ─── LOGIN ─────────────────────────────────────────────── */
-#login-screen{
-  position:fixed;inset:0;z-index:9999;
-  background:var(--bg);
-  display:flex;align-items:center;justify-content:center;
-}
-.login-box{
-  background:var(--panel);border:1px solid var(--border);border-radius:16px;
-  padding:36px 28px;width:92%;max-width:360px;
-  box-shadow:0 8px 40px rgba(0,0,0,.5);text-align:center;
-}
-.login-logo{font-size:52px;margin-bottom:8px;}
-.login-title{font-size:22px;font-weight:900;color:var(--accent2);margin-bottom:4px;}
-.login-sub{font-size:12px;color:var(--text2);margin-bottom:24px;}
-.login-field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;text-align:right;}
-.login-field label{font-size:11px;color:var(--text2);}
-.login-field input{
-  padding:11px 14px;background:var(--bg2);
-  border:1px solid var(--border);border-radius:8px;
-  font-family:'Cairo',sans-serif;font-size:14px;color:var(--text);outline:none;
-}
-.login-field input:focus{border-color:var(--accent);}
-.login-btn{
-  width:100%;padding:13px;background:var(--accent);color:#fff;
-  border:none;border-radius:10px;font-family:'Cairo',sans-serif;
-  font-size:16px;font-weight:900;cursor:pointer;margin-top:6px;
-}
-.login-btn:hover{background:var(--accent2);}
-.login-err{color:var(--red2);font-size:12px;margin-top:8px;min-height:18px;}
-
-/* ─── APP SHELL ─────────────────────────────────────────── */
-#app{display:none;flex-direction:column;height:100vh;}
-#app.visible{display:flex;}
-
-/* top navbar */
-.navbar{
-  background:var(--panel);border-bottom:1px solid var(--border);
-  padding:8px 14px;display:flex;align-items:center;gap:8px;flex-shrink:0;
-  position:sticky;top:0;z-index:100;
-}
-.nav-brand{font-size:15px;font-weight:900;color:var(--accent2);white-space:nowrap;}
-.nav-brand span{color:var(--text2);font-size:10px;font-weight:400;display:block;}
-.nav-tabs{display:flex;gap:3px;flex:1;overflow-x:auto;-webkit-overflow-scrolling:touch;}
-.nav-tabs::-webkit-scrollbar{display:none;}
-.ntab{
-  padding:7px 11px;border-radius:8px;border:none;
-  background:transparent;color:var(--text2);
-  font-family:'Cairo',sans-serif;font-size:12px;font-weight:600;
-  cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0;
-}
-.ntab.active{background:var(--accent);color:#fff;}
-.ntab:hover:not(.active){background:var(--panel2);color:var(--text);}
-.nav-actions{display:flex;gap:5px;flex-shrink:0;}
-.icon-btn{
-  padding:7px 10px;border-radius:8px;border:1px solid var(--border);
-  background:var(--panel2);color:var(--text2);font-size:12px;
-  cursor:pointer;font-family:'Cairo',sans-serif;white-space:nowrap;
-  transition:all .15s;
-}
-.icon-btn:hover{border-color:var(--accent);color:var(--accent);}
-.icon-btn.save-btn{background:var(--green);border-color:var(--green);color:#fff;}
-.icon-btn.save-btn:hover{background:var(--green2);}
-
-/* pages */
-.page{display:none;flex:1;overflow:hidden;}
-.page.active{display:flex;flex-direction:column;}
-
-/* ─── POS PAGE ──────────────────────────────────────────── */
-#page-pos{flex-direction:row;}
-@media(max-width:680px){#page-pos{flex-direction:column;}}
-
-.pos-left{
-  flex:1;overflow-y:auto;padding:12px;
-  display:flex;flex-direction:column;gap:10px;
-  min-width:0;
-}
-.pos-right{
-  width:340px;flex-shrink:0;
-  background:var(--panel);border-right:1px solid var(--border);
-  display:flex;flex-direction:column;overflow:hidden;
-}
-@media(max-width:680px){
-  .pos-right{width:100%;border-right:none;border-top:1px solid var(--border);height:55vh;flex-shrink:0;}
-  .pos-left{max-height:45vh;}
-}
-
-.top-row{display:flex;gap:7px;}
-.search-inp{
-  flex:1;padding:9px 12px;background:var(--panel);
-  border:1px solid var(--border);border-radius:8px;
-  font-family:'Cairo',sans-serif;font-size:13px;color:var(--text);outline:none;
-}
-.search-inp:focus{border-color:var(--accent);}
-.btn-add{
-  padding:9px 14px;background:var(--accent);color:#fff;border:none;
-  border-radius:8px;font-family:'Cairo',sans-serif;font-size:12px;
-  font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;
-}
-.btn-add:hover{background:var(--accent2);}
-
-.cats-row{display:flex;gap:5px;flex-wrap:wrap;}
-.cat-chip{
-  padding:4px 11px;border-radius:14px;
-  border:1px solid var(--border);background:transparent;
-  font-family:'Cairo',sans-serif;font-size:11px;color:var(--text2);cursor:pointer;transition:all .15s;
-}
-.cat-chip.active,.cat-chip:hover{background:var(--accent);border-color:var(--accent);color:#fff;}
-
-.products-grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:8px;
-}
-.prod-card{
-  background:var(--panel);border:1px solid var(--border);border-radius:10px;
-  padding:10px;cursor:pointer;transition:all .15s;
-  display:flex;flex-direction:column;gap:5px;position:relative;
-}
-.prod-card:active{transform:scale(.97);}
-.prod-card:hover{border-color:var(--accent);box-shadow:0 2px 12px var(--shadow);}
-.prod-card.oos{opacity:.4;cursor:not-allowed;}
-.pc-emoji{font-size:26px;text-align:center;}
-.pc-name{font-size:11px;font-weight:700;line-height:1.3;}
-.pc-cat{font-size:9px;color:var(--text2);}
-.pc-sell{font-size:13px;font-weight:900;color:var(--accent2);margin-top:auto;}
-.pc-profit{font-size:9px;color:var(--green2);}
-.pc-stock-badge{position:absolute;top:5px;left:5px;font-size:8px;padding:2px 5px;border-radius:4px;}
-.pc-stock-badge.low{background:rgba(212,172,13,.2);color:var(--gold2);border:1px solid var(--gold);}
-.pc-stock-badge.out{background:rgba(192,57,43,.2);color:var(--red2);border:1px solid var(--red);}
-.pc-edit-btn{
-  position:absolute;top:4px;right:4px;background:transparent;border:none;
-  color:var(--border);cursor:pointer;font-size:12px;padding:2px;
-}
-.prod-card:hover .pc-edit-btn{color:var(--text2);}
-.empty-grid{text-align:center;padding:50px 20px;color:var(--text2);grid-column:1/-1;}
-.empty-grid .eg{font-size:42px;margin-bottom:8px;}
-
-/* CART */
-.cart-head{
-  padding:10px 14px;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;gap:6px;flex-shrink:0;
-}
-.cart-head h2{font-size:14px;font-weight:700;flex:1;}
-.cart-badge{
-  background:var(--accent);color:#fff;
-  font-size:10px;font-weight:700;padding:2px 7px;border-radius:9px;
-}
-.clr-btn{background:none;border:none;color:var(--text2);font-size:11px;cursor:pointer;font-family:'Cairo',sans-serif;}
-.clr-btn:hover{color:var(--red2);}
-
-.cust-sec{padding:8px 12px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:5px;flex-shrink:0;}
-.cust-sec label{font-size:10px;color:var(--text2);}
-.cust-sec input{
-  width:100%;padding:7px 10px;background:var(--bg2);
-  border:1px solid var(--border);border-radius:6px;
-  font-family:'Cairo',sans-serif;font-size:12px;color:var(--text);outline:none;
-}
-.cust-sec input:focus{border-color:var(--accent);}
-
-.cart-items{flex:1;overflow-y:auto;padding:8px 12px;display:flex;flex-direction:column;gap:6px;}
-.cart-empty{text-align:center;padding:20px 10px;color:var(--text2);font-size:12px;}
-.ci{
-  background:var(--bg2);border:1px solid var(--border);border-radius:7px;
-  padding:7px 9px;display:flex;gap:7px;align-items:center;
-}
-.ci-ico{font-size:16px;flex-shrink:0;}
-.ci-inf{flex:1;min-width:0;}
-.ci-n{font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.ci-p{font-size:10px;color:var(--text2);}
-.ci-ctrl{display:flex;align-items:center;gap:3px;}
-.qb{
-  width:22px;height:22px;border-radius:5px;border:none;
-  background:var(--border);color:var(--text);font-size:13px;font-weight:700;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;
-}
-.qb:hover{background:var(--accent);color:#fff;}
-.qb.del{background:rgba(192,57,43,.25);color:var(--red2);}
-.qb.del:hover{background:var(--red);color:#fff;}
-.qn{font-size:12px;font-weight:700;min-width:18px;text-align:center;}
-.ci-tot{font-size:11px;font-weight:700;color:var(--accent2);min-width:60px;text-align:left;flex-shrink:0;}
-
-.totals-sec{padding:8px 12px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:5px;flex-shrink:0;}
-.tot-r{display:flex;justify-content:space-between;font-size:11px;}
-.tot-r.sub{color:var(--text2);}
-.tot-r.disc{color:var(--green2);}
-.tot-r.grand{font-size:16px;font-weight:900;color:var(--accent2);border-top:1px solid var(--border);padding-top:5px;margin-top:2px;}
-.disc-row{display:flex;gap:5px;}
-.disc-row input{
-  flex:1;padding:6px 9px;background:var(--bg2);
-  border:1px solid var(--border);border-radius:6px;
-  font-family:'Cairo',sans-serif;font-size:11px;color:var(--text);outline:none;
-}
-.disc-row input:focus{border-color:var(--accent);}
-.disc-apply{
-  padding:6px 9px;background:var(--panel2);border:1px solid var(--border);
-  border-radius:6px;font-family:'Cairo',sans-serif;font-size:11px;cursor:pointer;color:var(--text);
-}
-.disc-apply:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
-
-.pay-sec{padding:7px 12px;border-top:1px solid var(--border);flex-shrink:0;}
-.pay-sec label{font-size:10px;color:var(--text2);display:block;margin-bottom:5px;}
-.pay-btns{display:flex;gap:4px;}
-.pb{
-  flex:1;padding:6px 3px;border-radius:7px;
-  border:1px solid var(--border);background:var(--bg2);
-  font-family:'Cairo',sans-serif;font-size:10px;color:var(--text2);cursor:pointer;
-  display:flex;flex-direction:column;align-items:center;gap:2px;transition:all .15s;
-}
-.pb.active,.pb:hover{border-color:var(--accent);background:var(--accent);color:#fff;}
-.pb .pi{font-size:14px;}
-
-.checkout-sec{padding:8px 12px;flex-shrink:0;}
-.checkout-btn{
-  width:100%;padding:12px;background:var(--accent);color:#fff;
-  border:none;border-radius:9px;
-  font-family:'Cairo',sans-serif;font-size:14px;font-weight:900;
-  cursor:pointer;transition:all .2s;
-}
-.checkout-btn:hover:not(:disabled){background:var(--accent2);box-shadow:0 4px 14px rgba(224,123,42,.4);}
-.checkout-btn:disabled{opacity:.3;cursor:not-allowed;}
-
-/* ─── STORAGE PAGE ──────────────────────────────────────── */
-#page-storage{overflow-y:auto;padding:14px;gap:12px;}
-
-.page-hdr{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
-.page-hdr h2{font-size:16px;font-weight:900;}
-.page-hdr h2 span{color:var(--accent2);}
-
-.stg-tools{display:flex;gap:8px;flex-wrap:wrap;}
-.stg-tools input{
-  flex:1;min-width:140px;padding:8px 12px;background:var(--panel);
-  border:1px solid var(--border);border-radius:8px;
-  font-family:'Cairo',sans-serif;font-size:12px;color:var(--text);outline:none;
-}
-.stg-tools input:focus{border-color:var(--accent);}
-
-.stg-wrap{background:var(--panel);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
-.stg-tbl{width:100%;border-collapse:collapse;font-size:12px;}
-.stg-tbl th{background:var(--panel2);color:var(--text2);padding:9px 12px;font-weight:600;text-align:right;font-size:11px;}
-.stg-tbl td{padding:8px 12px;border-bottom:1px solid var(--bg2);vertical-align:middle;}
-.stg-tbl tr:last-child td{border-bottom:none;}
-.stg-tbl tr:hover td{background:var(--panel2);}
-.tbl-badge{display:inline-block;padding:2px 7px;border-radius:8px;font-size:9px;font-weight:700;}
-.tbl-badge.ok{background:rgba(39,174,96,.2);color:var(--green2);border:1px solid var(--green);}
-.tbl-badge.low{background:rgba(212,172,13,.2);color:var(--gold2);border:1px solid var(--gold);}
-.tbl-badge.out{background:rgba(192,57,43,.2);color:var(--red2);border:1px solid var(--red);}
-.tbl-acts{display:flex;gap:4px;}
-.tbl-btn{
-  padding:3px 8px;border-radius:5px;border:1px solid var(--border);
-  background:var(--bg2);font-family:'Cairo',sans-serif;font-size:10px;cursor:pointer;color:var(--text);
-}
-.tbl-btn:hover{border-color:var(--accent);color:var(--accent);}
-.tbl-btn.del:hover{border-color:var(--red2);color:var(--red2);}
-.tbl-btn.trans{background:rgba(36,113,163,.2);border-color:var(--blue);}
-.tbl-btn.trans:hover{background:var(--blue);color:#fff;}
-.empty-tbl{text-align:center;padding:32px;color:var(--text2);}
-
-/* profit pill */
-.profit-pill{
-  display:inline-block;padding:2px 7px;border-radius:8px;font-size:9px;font-weight:700;
-  background:rgba(39,174,96,.15);color:var(--green2);
-}
-
-/* ─── DEBTS PAGE ─────────────────────────────────────────── */
-#page-debts{overflow-y:auto;padding:14px;gap:12px;}
-.debt-summary{
-  background:var(--panel);border:1px solid var(--border);border-radius:10px;
-  padding:12px 16px;display:flex;justify-content:space-between;align-items:center;
-}
-.debt-summary h3{font-size:12px;color:var(--text2);}
-.debt-total-val{font-size:22px;font-weight:900;color:var(--red2);}
-.debt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;}
-.debt-card{
-  background:var(--panel);border:1px solid var(--border);border-radius:10px;
-  padding:12px;display:flex;flex-direction:column;gap:7px;
-}
-.dc-head{display:flex;justify-content:space-between;align-items:flex-start;}
-.dc-name{font-size:14px;font-weight:700;}
-.dc-phone{font-size:10px;color:var(--text2);}
-.dc-amount{font-size:18px;font-weight:900;color:var(--red2);text-align:left;}
-.dc-amount small{font-size:9px;font-weight:400;color:var(--text2);display:block;}
-.dc-note{font-size:10px;color:var(--text2);background:var(--bg2);padding:5px 8px;border-radius:6px;line-height:1.5;}
-.dc-date{font-size:9px;color:var(--text2);}
-.dc-prog{background:var(--bg2);border-radius:4px;height:5px;overflow:hidden;}
-.dc-prog-bar{height:100%;background:var(--green);border-radius:4px;transition:width .3s;}
-.dc-acts{display:flex;gap:5px;}
-.dc-pay-btn{
-  flex:1;padding:7px;background:var(--green);color:#fff;border:none;border-radius:7px;
-  font-family:'Cairo',sans-serif;font-size:11px;font-weight:700;cursor:pointer;
-}
-.dc-pay-btn:hover{background:var(--green2);}
-.dc-print-btn{
-  padding:7px 10px;background:var(--blue);color:#fff;border:none;border-radius:7px;
-  font-family:'Cairo',sans-serif;font-size:11px;cursor:pointer;
-}
-.dc-print-btn:hover{background:var(--blue2);}
-.dc-del-btn{
-  padding:7px 10px;background:var(--panel2);border:1px solid var(--border);border-radius:7px;
-  font-family:'Cairo',sans-serif;font-size:11px;cursor:pointer;color:var(--text);
-}
-.dc-del-btn:hover{border-color:var(--red2);color:var(--red2);}
-
-/* ─── MODALS ─────────────────────────────────────────────── */
-.overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,.65);
-  display:flex;align-items:center;justify-content:center;
-  z-index:500;opacity:0;pointer-events:none;transition:opacity .22s;
-  padding:12px;
-}
-.overlay.show{opacity:1;pointer-events:all;}
-.modal{
-  background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:22px;
-  width:100%;max-width:400px;max-height:90vh;overflow-y:auto;
-  transform:translateY(20px);transition:transform .22s;
-}
-.overlay.show .modal{transform:translateY(0);}
-.modal h3{font-size:15px;font-weight:900;margin-bottom:14px;}
-.mf{display:flex;flex-direction:column;gap:4px;margin-bottom:11px;}
-.mf label{font-size:10px;color:var(--text2);}
-.mf input,.mf select,.mf textarea{
-  padding:9px 11px;background:var(--bg2);
-  border:1px solid var(--border);border-radius:7px;
-  font-family:'Cairo',sans-serif;font-size:13px;color:var(--text);outline:none;width:100%;
-}
-.mf input:focus,.mf select:focus,.mf textarea:focus{border-color:var(--accent);}
-.mf select option{background:var(--panel);}
-.mf textarea{resize:vertical;min-height:60px;}
-.mf-row{display:flex;gap:8px;}
-.mf-row .mf{flex:1;}
-.mbns{display:flex;gap:7px;margin-top:6px;}
-.mbtn{
-  flex:1;padding:10px;border-radius:8px;border:none;
-  font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;cursor:pointer;
-}
-.mbtn.s{background:var(--accent);color:#fff;}
-.mbtn.s:hover{background:var(--accent2);}
-.mbtn.c{background:var(--panel2);color:var(--text);border:1px solid var(--border);}
-.mbtn.c:hover{background:var(--bg2);}
-.mbtn.g{background:var(--green);color:#fff;}
-.mbtn.g:hover{background:var(--green2);}
-
-/* price info row */
-.price-info{
-  background:var(--bg2);border-radius:8px;padding:8px 10px;
-  display:flex;justify-content:space-between;font-size:11px;color:var(--text2);
-  margin-bottom:11px;
-}
-.price-info .profit-hi{color:var(--green2);font-weight:700;}
-
-/* receipt */
-.rcpt-modal{
-  background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:24px;
-  width:100%;max-width:370px;text-align:center;
-  transform:translateY(20px);transition:transform .22s;max-height:90vh;overflow-y:auto;
-}
-.overlay.show .rcpt-modal{transform:translateY(0);}
-.rcpt-ico{font-size:46px;margin-bottom:6px;}
-.rcpt-ttl{font-size:18px;font-weight:900;color:var(--accent2);margin-bottom:4px;}
-.rcpt-sub{font-size:11px;color:var(--text2);margin-bottom:14px;}
-.rcpt-rows{text-align:right;margin-bottom:12px;}
-.rcpt-r{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dashed var(--border);font-size:11px;}
-.rcpt-r.grand{font-size:15px;font-weight:900;color:var(--accent2);border:none;padding-top:8px;}
-.rcpt-note{font-size:10px;color:var(--text2);background:var(--bg2);padding:6px 9px;border-radius:6px;text-align:right;margin-bottom:12px;}
-.rcpt-bns{display:flex;gap:7px;}
-.rcpt-btn{
-  flex:1;padding:10px;border-radius:8px;border:none;
-  font-family:'Cairo',sans-serif;font-size:12px;font-weight:700;cursor:pointer;
-}
-.rcpt-btn.pr{background:var(--blue);color:#fff;}
-.rcpt-btn.pr:hover{background:var(--blue2);}
-.rcpt-btn.nw{background:var(--accent);color:#fff;}
-.rcpt-btn.nw:hover{background:var(--accent2);}
-
-/* transfer modal */
-.trans-info{
-  background:var(--bg2);border-radius:8px;padding:10px;margin-bottom:12px;
-}
-.trans-info .ti-name{font-size:14px;font-weight:700;}
-.trans-info .ti-stock{font-size:12px;color:var(--text2);}
-
-/* toast */
-.toast{
-  position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);
-  background:var(--green);color:#fff;padding:10px 20px;border-radius:10px;
-  font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;
-  z-index:9999;transition:transform .3s;white-space:nowrap;
-  box-shadow:0 4px 20px rgba(0,0,0,.4);
-}
-.toast.show{transform:translateX(-50%) translateY(0);}
-.toast.err{background:var(--red);}
-
-/* scrollbar */
+/* ── SCROLLBAR ─────────────────────────────────────── */
 ::-webkit-scrollbar{width:4px;height:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+/* ── LOGIN ─────────────────────────────────────────── */
+#login-screen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;}
+.login-box{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:36px 28px;width:92%;max-width:360px;box-shadow:0 12px 50px rgba(0,0,0,.6);text-align:center;}
+.login-logo{font-size:56px;margin-bottom:8px;}
+.login-title{font-size:22px;font-weight:900;color:var(--accent2);margin-bottom:2px;}
+.login-sub{font-size:11px;color:var(--text2);margin-bottom:24px;}
+.lf{display:flex;flex-direction:column;gap:5px;margin-bottom:13px;text-align:right;}
+.lf label{font-size:10px;color:var(--text2);}
+.lf input{padding:11px 13px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;font-size:14px;color:var(--text);outline:none;}
+.lf input:focus{border-color:var(--accent);}
+.login-btn{width:100%;padding:13px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:900;cursor:pointer;margin-top:4px;}
+.login-btn:hover{background:var(--accent2);}
+.login-err{color:var(--red2);font-size:11px;margin-top:6px;min-height:16px;}
+
+/* ── APP SHELL ──────────────────────────────────────── */
+#app{display:none;flex-direction:column;height:100vh;overflow:hidden;}
+#app.on{display:flex;}
+
+/* ── NAVBAR ─────────────────────────────────────────── */
+.navbar{background:var(--panel);border-bottom:1px solid var(--border);padding:7px 12px;display:flex;align-items:center;gap:7px;flex-shrink:0;z-index:50;}
+.nav-brand{font-size:14px;font-weight:900;color:var(--accent2);white-space:nowrap;line-height:1.2;}
+.nav-brand small{color:var(--text2);font-size:9px;font-weight:400;display:block;}
+.ntabs{display:flex;gap:2px;flex:1;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.ntabs::-webkit-scrollbar{display:none;}
+.ntab{padding:6px 10px;border-radius:7px;border:none;background:transparent;color:var(--text2);font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0;}
+.ntab.on{background:var(--accent);color:#fff;}
+.ntab:hover:not(.on){background:var(--panel2);color:var(--text);}
+.nav-acts{display:flex;gap:4px;flex-shrink:0;}
+.ibtn{padding:6px 9px;border-radius:7px;border:1px solid var(--border);background:var(--panel2);color:var(--text2);font-size:11px;cursor:pointer;white-space:nowrap;transition:all .15s;}
+.ibtn:hover{border-color:var(--accent);color:var(--accent);}
+.ibtn.save{background:var(--green);border-color:var(--green);color:#fff;}
+.ibtn.save:hover{background:var(--green2);}
+
+/* ── PAGES ──────────────────────────────────────────── */
+.page{display:none;flex:1;overflow:hidden;}
+.page.on{display:flex;flex-direction:column;}
+
+/* ── POS ────────────────────────────────────────────── */
+#pg-pos{flex-direction:row;}
+@media(max-width:680px){#pg-pos{flex-direction:column;}}
+.pos-left{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:9px;min-width:0;}
+.pos-right{width:330px;flex-shrink:0;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+@media(max-width:680px){.pos-right{width:100%;border-right:none;border-top:1px solid var(--border);height:56vh;flex-shrink:0;}.pos-left{max-height:44vh;}}
+
+.toprow{display:flex;gap:6px;}
+.sinp{flex:1;padding:8px 11px;background:var(--panel);border:1px solid var(--border);border-radius:8px;font-size:13px;color:var(--text);outline:none;}
+.sinp:focus{border-color:var(--accent);}
+.btn-add{padding:8px 13px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.btn-add:hover{background:var(--accent2);}
+.cats-row{display:flex;gap:4px;flex-wrap:wrap;}
+.cchip{padding:4px 10px;border-radius:12px;border:1px solid var(--border);background:transparent;font-size:10px;color:var(--text2);cursor:pointer;transition:all .15s;}
+.cchip.on,.cchip:hover{background:var(--accent);border-color:var(--accent);color:#fff;}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;}
+.pcard{background:var(--panel);border:1px solid var(--border);border-radius:9px;padding:10px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;gap:4px;position:relative;}
+.pcard:active{transform:scale(.96);}
+.pcard:hover{border-color:var(--accent);box-shadow:0 2px 10px var(--shadow);}
+.pcard.oos{opacity:.35;cursor:not-allowed;}
+.pc-em{font-size:24px;text-align:center;}
+.pc-nm{font-size:11px;font-weight:700;line-height:1.3;}
+.pc-ct{font-size:9px;color:var(--text2);}
+.pc-pr{font-size:13px;font-weight:900;color:var(--accent2);margin-top:auto;}
+.pc-pf{font-size:9px;color:var(--green2);}
+.pbadge{position:absolute;top:4px;left:4px;font-size:8px;padding:2px 4px;border-radius:3px;}
+.pbadge.low{background:var(--goldlite);color:var(--gold2);border:1px solid var(--gold);}
+.pbadge.out{background:var(--redlite);color:var(--red2);border:1px solid var(--red);}
+.pedit{position:absolute;top:3px;right:3px;background:transparent;border:none;color:transparent;cursor:pointer;font-size:11px;padding:2px;}
+.pcard:hover .pedit{color:var(--text2);}
+.empty-g{text-align:center;padding:40px 16px;color:var(--text2);grid-column:1/-1;}
+.empty-g .eg{font-size:38px;margin-bottom:8px;}
+
+/* CART */
+.cart-hd{padding:9px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:5px;flex-shrink:0;}
+.cart-hd h2{font-size:13px;font-weight:700;flex:1;}
+.cbadge{background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:8px;}
+.clrbtn{background:none;border:none;color:var(--text2);font-size:10px;cursor:pointer;}
+.clrbtn:hover{color:var(--red2);}
+.cust-sec{padding:7px 11px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:5px;flex-shrink:0;}
+.cust-sec label{font-size:9px;color:var(--text2);}
+.cust-sec input{width:100%;padding:6px 9px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;font-size:12px;color:var(--text);outline:none;}
+.cust-sec input:focus{border-color:var(--accent);}
+.citems{flex:1;overflow-y:auto;padding:7px 11px;display:flex;flex-direction:column;gap:5px;}
+.cempty{text-align:center;padding:18px 8px;color:var(--text2);font-size:12px;}
+.ci{background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:6px 8px;display:flex;gap:6px;align-items:center;}
+.ci-ico{font-size:15px;flex-shrink:0;}
+.ci-inf{flex:1;min-width:0;}
+.ci-n{font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ci-p{font-size:9px;color:var(--text2);}
+.ci-ctrl{display:flex;align-items:center;gap:2px;}
+.qb{width:20px;height:20px;border-radius:4px;border:none;background:var(--border);color:var(--text);font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.qb:hover{background:var(--accent);color:#fff;}
+.qb.del{background:var(--redlite);color:var(--red2);}
+.qb.del:hover{background:var(--red);color:#fff;}
+.qn{font-size:11px;font-weight:700;min-width:16px;text-align:center;}
+.ci-tot{font-size:11px;font-weight:700;color:var(--accent2);min-width:58px;text-align:left;flex-shrink:0;}
+.tots{padding:7px 11px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:4px;flex-shrink:0;}
+.tr{display:flex;justify-content:space-between;font-size:11px;}
+.tr.sub{color:var(--text2);}
+.tr.disc{color:var(--green2);}
+.tr.grd{font-size:15px;font-weight:900;color:var(--accent2);border-top:1px solid var(--border);padding-top:5px;margin-top:2px;}
+.drow{display:flex;gap:4px;}
+.drow input{flex:1;padding:5px 8px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;font-size:11px;color:var(--text);outline:none;}
+.drow input:focus{border-color:var(--accent);}
+.dapply{padding:5px 8px;background:var(--panel2);border:1px solid var(--border);border-radius:6px;font-size:10px;cursor:pointer;color:var(--text);}
+.dapply:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+.pay-sec{padding:6px 11px;border-top:1px solid var(--border);flex-shrink:0;}
+.pay-sec label{font-size:9px;color:var(--text2);display:block;margin-bottom:4px;}
+.pbtns{display:flex;gap:3px;}
+.pb{flex:1;padding:5px 2px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);font-size:9px;color:var(--text2);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;transition:all .15s;}
+.pb.on,.pb:hover{border-color:var(--accent);background:var(--accent);color:#fff;}
+.pb .pi{font-size:13px;}
+.chk-sec{padding:7px 11px;flex-shrink:0;}
+.chkbtn{width:100%;padding:11px;background:var(--accent);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:900;cursor:pointer;transition:all .2s;}
+.chkbtn:hover:not(:disabled){background:var(--accent2);box-shadow:0 4px 14px rgba(212,116,30,.4);}
+.chkbtn:disabled{opacity:.3;cursor:not-allowed;}
+
+/* ── SCROLL PAGE ─────────────────────────────────────── */
+.spage{overflow-y:auto;padding:12px;gap:11px;}
+.phdr{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px;flex-shrink:0;}
+.phdr h2{font-size:15px;font-weight:900;}
+.phdr h2 span{color:var(--accent2);}
+
+/* ── STATS CARDS ─────────────────────────────────────── */
+.stat-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;}
+.scard{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px 14px;}
+.scard .sv{font-size:18px;font-weight:900;margin-bottom:3px;}
+.scard .sl{font-size:10px;color:var(--text2);}
+.scard.g .sv{color:var(--green2);}
+.scard.r .sv{color:var(--red2);}
+.scard.o .sv{color:var(--accent2);}
+.scard.b .sv{color:var(--blue2);}
+.scard.p .sv{color:var(--purple2);}
+
+/* ── TABLE ───────────────────────────────────────────── */
+.tbl-wrap{background:var(--panel);border:1px solid var(--border);border-radius:10px;overflow:auto;}
+.tbl{width:100%;border-collapse:collapse;font-size:11px;min-width:500px;}
+.tbl th{background:var(--panel2);color:var(--text2);padding:8px 11px;font-weight:600;text-align:right;white-space:nowrap;}
+.tbl td{padding:7px 11px;border-bottom:1px solid var(--bg2);vertical-align:middle;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:var(--panel2);}
+.tbadge{display:inline-block;padding:2px 6px;border-radius:6px;font-size:9px;font-weight:700;}
+.tbadge.ok{background:var(--greenlite);color:var(--green2);border:1px solid var(--green);}
+.tbadge.low{background:var(--goldlite);color:var(--gold2);border:1px solid var(--gold);}
+.tbadge.out{background:var(--redlite);color:var(--red2);border:1px solid var(--red);}
+.tbadge.debt{background:var(--redlite);color:var(--red2);}
+.tbadge.paid{background:var(--greenlite);color:var(--green2);}
+.tbadge.partial{background:var(--goldlite);color:var(--gold2);}
+.tacts{display:flex;gap:3px;flex-wrap:wrap;}
+.tbtn{padding:3px 7px;border-radius:4px;border:1px solid var(--border);background:var(--bg2);font-size:10px;cursor:pointer;color:var(--text);white-space:nowrap;}
+.tbtn:hover{border-color:var(--accent);color:var(--accent);}
+.tbtn.del:hover{border-color:var(--red2);color:var(--red2);}
+.tbtn.tr{background:var(--bluelite);border-color:var(--blue);}
+.tbtn.tr:hover{background:var(--blue);color:#fff;}
+.tbtn.g{background:var(--greenlite);border-color:var(--green);}
+.tbtn.g:hover{background:var(--green);color:#fff;}
+.empty-tbl{text-align:center;padding:28px;color:var(--text2);}
+.profit-pill{display:inline-block;padding:2px 6px;border-radius:6px;font-size:9px;font-weight:700;background:var(--greenlite);color:var(--green2);}
+.loss-pill{display:inline-block;padding:2px 6px;border-radius:6px;font-size:9px;font-weight:700;background:var(--redlite);color:var(--red2);}
+
+/* ── DEBT CARDS ──────────────────────────────────────── */
+.debt-summary{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:11px 15px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;flex-shrink:0;}
+.debt-summary h3{font-size:11px;color:var(--text2);}
+.debt-tv{font-size:20px;font-weight:900;color:var(--red2);}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:9px;}
+.dcard{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:11px;display:flex;flex-direction:column;gap:6px;}
+.dc-hd{display:flex;justify-content:space-between;align-items:flex-start;}
+.dc-nm{font-size:13px;font-weight:700;}
+.dc-ph{font-size:10px;color:var(--text2);}
+.dc-am{font-size:17px;font-weight:900;color:var(--red2);text-align:left;}
+.dc-am small{font-size:9px;font-weight:400;color:var(--text2);display:block;}
+.dc-note{font-size:10px;color:var(--text2);background:var(--bg2);padding:5px 7px;border-radius:5px;line-height:1.5;}
+.dc-date{font-size:9px;color:var(--text2);}
+.dc-prog{background:var(--bg2);border-radius:4px;height:4px;overflow:hidden;}
+.dc-progbar{height:100%;background:var(--green);border-radius:4px;}
+.dc-acts{display:flex;gap:4px;}
+.dc-pay{flex:1;padding:6px;background:var(--green);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;}
+.dc-pay:hover{background:var(--green2);}
+.dc-print{padding:6px 9px;background:var(--bluelite);border:1px solid var(--blue);border-radius:6px;font-size:11px;cursor:pointer;color:var(--blue2);}
+.dc-print:hover{background:var(--blue);color:#fff;}
+.dc-del{padding:6px 9px;background:var(--panel2);border:1px solid var(--border);border-radius:6px;font-size:11px;cursor:pointer;color:var(--text);}
+.dc-del:hover{border-color:var(--red2);color:var(--red2);}
+
+/* ── SUPPLIER CARDS ──────────────────────────────────── */
+.sup-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:9px;}
+.sup-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:11px;display:flex;flex-direction:column;gap:6px;}
+.sup-card .sc-hd{display:flex;justify-content:space-between;align-items:flex-start;}
+.sup-card .sc-nm{font-size:14px;font-weight:700;}
+.sup-card .sc-ph{font-size:10px;color:var(--text2);}
+.sup-card .sc-bal{font-size:18px;font-weight:900;color:var(--blue2);text-align:left;}
+.sup-card .sc-bal small{font-size:9px;color:var(--text2);display:block;}
+.sup-card .sc-note{font-size:10px;color:var(--text2);background:var(--bg2);padding:5px 7px;border-radius:5px;}
+.sup-card .sc-acts{display:flex;gap:4px;}
+.sup-card .sc-pay{flex:1;padding:6px;background:var(--blue);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;}
+.sup-card .sc-pay:hover{background:var(--blue2);}
+.sup-card .sc-log{padding:6px 9px;background:var(--panel2);border:1px solid var(--border);border-radius:6px;font-size:11px;cursor:pointer;color:var(--text);}
+.sup-card .sc-log:hover{border-color:var(--blue2);color:var(--blue2);}
+.sup-card .sc-del{padding:6px 9px;background:var(--panel2);border:1px solid var(--border);border-radius:6px;font-size:11px;cursor:pointer;color:var(--text);}
+.sup-card .sc-del:hover{border-color:var(--red2);color:var(--red2);}
+
+/* ── CUSTOMER PAGE ────────────────────────────────────── */
+.cust-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:9px;}
+.cust-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:11px;display:flex;flex-direction:column;gap:6px;cursor:pointer;}
+.cust-card:hover{border-color:var(--accent);}
+.cc-nm{font-size:14px;font-weight:700;}
+.cc-ph{font-size:10px;color:var(--text2);}
+.cc-stats{display:flex;gap:8px;}
+.cc-stat{flex:1;background:var(--bg2);border-radius:6px;padding:5px 7px;text-align:center;}
+.cc-stat .csv{font-size:12px;font-weight:700;}
+.cc-stat .csl{font-size:9px;color:var(--text2);}
+
+/* ── MODALS ──────────────────────────────────────────── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:500;opacity:0;pointer-events:none;transition:opacity .2s;padding:10px;}
+.overlay.on{opacity:1;pointer-events:all;}
+.modal{background:var(--panel);border:1px solid var(--border);border-radius:13px;padding:20px;width:100%;max-width:400px;max-height:92vh;overflow-y:auto;transform:translateY(18px);transition:transform .2s;}
+.overlay.on .modal{transform:translateY(0);}
+.modal h3{font-size:14px;font-weight:900;margin-bottom:13px;}
+.mf{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
+.mf label{font-size:10px;color:var(--text2);}
+.mf input,.mf select,.mf textarea{padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;font-size:12px;color:var(--text);outline:none;width:100%;}
+.mf input:focus,.mf select:focus,.mf textarea:focus{border-color:var(--accent);}
+.mf select option{background:var(--panel);}
+.mf textarea{resize:vertical;min-height:56px;}
+.mfrow{display:flex;gap:7px;}
+.mfrow .mf{flex:1;}
+.mbns{display:flex;gap:6px;margin-top:6px;}
+.mbtn{flex:1;padding:9px;border-radius:7px;border:none;font-size:12px;font-weight:700;cursor:pointer;}
+.mbtn.s{background:var(--accent);color:#fff;}
+.mbtn.s:hover{background:var(--accent2);}
+.mbtn.g{background:var(--green);color:#fff;}
+.mbtn.g:hover{background:var(--green2);}
+.mbtn.b{background:var(--blue);color:#fff;}
+.mbtn.b:hover{background:var(--blue2);}
+.mbtn.c{background:var(--panel2);color:var(--text);border:1px solid var(--border);}
+.mbtn.c:hover{background:var(--bg2);}
+.pinfo{background:var(--bg2);border-radius:7px;padding:8px 10px;margin-bottom:10px;}
+.pinfo .pi-nm{font-size:13px;font-weight:700;}
+.pinfo .pi-det{font-size:11px;color:var(--text2);margin-top:2px;}
+.price-preview{background:var(--bg2);border-radius:7px;padding:8px 10px;display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-bottom:10px;}
+.ph{color:var(--green2);font-weight:700;}
+.ph.neg{color:var(--red2);}
+
+/* RECEIPT MODAL */
+.rcpt-modal{background:var(--panel);border:1px solid var(--border);border-radius:13px;padding:22px;width:100%;max-width:360px;text-align:center;transform:translateY(18px);transition:transform .2s;max-height:90vh;overflow-y:auto;}
+.overlay.on .rcpt-modal{transform:translateY(0);}
+.rc-ico{font-size:44px;margin-bottom:6px;}
+.rc-ttl{font-size:17px;font-weight:900;color:var(--accent2);margin-bottom:4px;}
+.rc-sub{font-size:10px;color:var(--text2);margin-bottom:13px;}
+.rc-rows{text-align:right;margin-bottom:11px;}
+.rc-r{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px dashed var(--border);font-size:11px;}
+.rc-r.grd{font-size:14px;font-weight:900;color:var(--accent2);border:none;padding-top:7px;}
+.rc-note{font-size:10px;color:var(--text2);background:var(--bg2);padding:5px 8px;border-radius:5px;text-align:right;margin-bottom:11px;}
+.rc-bns{display:flex;gap:6px;}
+.rc-btn{flex:1;padding:9px;border-radius:7px;border:none;font-size:11px;font-weight:700;cursor:pointer;}
+.rc-btn.pr{background:var(--blue);color:#fff;}
+.rc-btn.pr:hover{background:var(--blue2);}
+.rc-btn.nw{background:var(--accent);color:#fff;}
+.rc-btn.nw:hover{background:var(--accent2);}
+
+/* TOAST */
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--green);color:#fff;padding:9px 18px;border-radius:9px;font-size:12px;font-weight:700;z-index:9999;transition:transform .28s;white-space:nowrap;box-shadow:0 4px 18px rgba(0,0,0,.4);}
+.toast.on{transform:translateX(-50%) translateY(0);}
+.toast.err{background:var(--red);}
+.toast.info{background:var(--blue);}
+
+/* SEARCH ROW */
+.tool-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+.tool-row input{flex:1;min-width:130px;padding:7px 10px;background:var(--panel);border:1px solid var(--border);border-radius:7px;font-size:12px;color:var(--text);outline:none;}
+.tool-row input:focus{border-color:var(--accent);}
 </style>
 </head>
 <body>
 
-<!-- ═══ LOGIN ═══ -->
+<!-- LOGIN -->
 <div id="login-screen">
-  <div class="login-box">
-    <div class="login-logo">🌡️</div>
-    <div class="login-title">محل الزرقاني</div>
-    <div class="login-sub">نظام إدارة المبيعات والمخزن</div>
-    <div class="login-field">
-      <label>اسم المستخدم</label>
-      <input type="text" id="l-user" placeholder="alzergany" autocomplete="username">
-    </div>
-    <div class="login-field">
-      <label>كلمة المرور</label>
-      <input type="password" id="l-pass" placeholder="••••" autocomplete="current-password">
-    </div>
-    <button class="login-btn" onclick="doLogin()">دخول</button>
-    <div class="login-err" id="l-err"></div>
-  </div>
+<div class="login-box">
+  <div class="login-logo">🌡️</div>
+  <div class="login-title">محل الزرقاني</div>
+  <div class="login-sub">نظام إدارة المبيعات والمخزن</div>
+  <div class="lf"><label>اسم المستخدم</label><input id="l-u" type="text" placeholder="alzergany"></div>
+  <div class="lf"><label>كلمة المرور</label><input id="l-p" type="password" placeholder="••••"></div>
+  <button class="login-btn" onclick="doLogin()">دخول ←</button>
+  <div class="login-err" id="l-err"></div>
+</div>
 </div>
 
-<!-- ═══ APP ═══ -->
+<!-- APP -->
 <div id="app">
-  <!-- navbar -->
-  <div class="navbar">
-    <div class="nav-brand">الزرقاني<span>نقطة البيع</span></div>
-    <div class="nav-tabs">
-      <button class="ntab active" onclick="switchPage('pos',this)">🛒 البيع</button>
-      <button class="ntab" onclick="switchPage('storage',this)">📦 المخزن</button>
-      <button class="ntab" onclick="switchPage('debts',this)">📋 الديون</button>
-    </div>
-    <div class="nav-actions">
-      <button class="icon-btn save-btn" onclick="exportBackup()" title="تصدير نسخة احتياطية">💾 حفظ</button>
-      <label class="icon-btn" title="استيراد نسخة احتياطية" style="cursor:pointer">
-        📂 <input type="file" accept=".json" onchange="importBackup(this)" style="display:none">
-      </label>
-      <button class="icon-btn" onclick="doLogout()" title="خروج">🚪</button>
-    </div>
+<div class="navbar">
+  <div class="nav-brand">الزرقاني<small>نقطة البيع</small></div>
+  <div class="ntabs">
+    <button class="ntab on"  onclick="goPage('pos',this)">🛒 البيع</button>
+    <button class="ntab" onclick="goPage('storage',this)">📦 المخزن</button>
+    <button class="ntab" onclick="goPage('debts',this)">📋 الديون</button>
+    <button class="ntab" onclick="goPage('suppliers',this)">🏪 الموردون</button>
+    <button class="ntab" onclick="goPage('customers',this)">👥 العملاء</button>
+    <button class="ntab" onclick="goPage('reports',this)">📊 التقارير</button>
+    <button class="ntab" onclick="goPage('txlog',this)">📜 السجل</button>
   </div>
-
-  <!-- ═══ POS ═══ -->
-  <div class="page active" id="page-pos">
-    <div class="pos-left">
-      <div class="top-row">
-        <input class="search-inp" type="text" id="pos-srch" placeholder="🔍 بحث..." oninput="renderProds()">
-        <button class="btn-add" onclick="openAddProd()">+ إضافة</button>
-      </div>
-      <div class="cats-row" id="cats-row"></div>
-      <div class="products-grid" id="prods-grid"></div>
-    </div>
-    <div class="pos-right">
-      <div class="cart-head">
-        <h2>🧾 الفاتورة</h2>
-        <span class="cart-badge" id="cart-badge">0</span>
-        <button class="clr-btn" onclick="clearCart()">مسح الكل</button>
-      </div>
-      <div class="cust-sec">
-        <label>اسم العميل</label>
-        <input type="text" id="cust-name" placeholder="العميل (اختياري)">
-        <label>ملاحظة</label>
-        <input type="text" id="cust-note" placeholder="ملاحظة على الفاتورة">
-      </div>
-      <div class="cart-items" id="cart-items"></div>
-      <div class="totals-sec">
-        <div class="tot-r sub"><span>المجموع الفرعي</span><span id="t-sub">0 د.ع</span></div>
-        <div class="disc-row">
-          <input type="number" id="disc-inp" placeholder="خصم %" min="0" max="100">
-          <button class="disc-apply" onclick="applyDisc()">تطبيق</button>
-        </div>
-        <div class="tot-r disc" id="disc-row" style="display:none"><span>الخصم</span><span id="t-disc"></span></div>
-        <div class="tot-r grand"><span>الإجمالي</span><span id="t-grand">0 د.ع</span></div>
-      </div>
-      <div class="pay-sec">
-        <label>طريقة الدفع</label>
-        <div class="pay-btns">
-          <button class="pb active" data-p="cash" onclick="selPay(this)"><span class="pi">💵</span>نقدي</button>
-          <button class="pb" data-p="card" onclick="selPay(this)"><span class="pi">💳</span>بطاقة</button>
-          <button class="pb" data-p="transfer" onclick="selPay(this)"><span class="pi">📱</span>تحويل</button>
-          <button class="pb" data-p="debt" onclick="selPay(this)"><span class="pi">📋</span>دَين</button>
-        </div>
-      </div>
-      <div class="checkout-sec">
-        <button class="checkout-btn" id="chk-btn" onclick="checkout()" disabled>💰 إتمام البيع</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══ STORAGE ═══ -->
-  <div class="page" id="page-storage">
-    <div class="page-hdr">
-      <h2>📦 إدارة <span>المخزن</span></h2>
-      <div class="stg-tools">
-        <input type="text" id="stg-srch" placeholder="🔍 بحث في المخزن..." oninput="renderStorage()">
-        <button class="btn-add" onclick="openAddProd()">+ منتج جديد</button>
-      </div>
-    </div>
-    <div class="stg-wrap">
-      <table class="stg-tbl">
-        <thead><tr>
-          <th>المنتج</th><th>الفئة</th>
-          <th>شراء</th><th>بيع</th><th>ربح%</th>
-          <th>مخزن</th><th>بيع</th><th>حالة</th><th>إجراء</th>
-        </tr></thead>
-        <tbody id="stg-tbody"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- ═══ DEBTS ═══ -->
-  <div class="page" id="page-debts">
-    <div class="debt-summary">
-      <div><h3>إجمالي الديون المستحقة</h3><div class="debt-total-val" id="debt-total">0 د.ع</div></div>
-      <button class="btn-add" onclick="openAddDebt()">+ دين جديد</button>
-    </div>
-    <div class="debt-grid" id="debt-grid"></div>
+  <div class="nav-acts">
+    <button class="ibtn save" onclick="exportBk()">💾 حفظ</button>
+    <label class="ibtn" style="cursor:pointer" title="استيراد">📂<input type="file" accept=".json" onchange="importBk(this)" style="display:none"></label>
+    <button class="ibtn" onclick="doLogout()">🚪</button>
   </div>
 </div>
+
+<!-- POS -->
+<div class="page on" id="pg-pos">
+  <div class="pos-left">
+    <div class="toprow">
+      <input class="sinp" id="ps-srch" placeholder="🔍 بحث..." oninput="renderProds()">
+      <button class="btn-add" onclick="openAddProd()">+ إضافة</button>
+    </div>
+    <div class="cats-row" id="cats-row"></div>
+    <div class="pgrid" id="pgrid"></div>
+  </div>
+  <div class="pos-right">
+    <div class="cart-hd"><h2>🧾 الفاتورة</h2><span class="cbadge" id="cbadge">0</span><button class="clrbtn" onclick="clearCart()">مسح الكل</button></div>
+    <div class="cust-sec">
+      <label>العميل</label>
+      <input id="c-name" type="text" placeholder="اسم العميل" list="cust-list"><datalist id="cust-list"></datalist>
+      <label>رقم الهاتف</label>
+      <input id="c-phone" type="tel" placeholder="07xx...">
+      <label>ملاحظة</label>
+      <input id="c-note" type="text" placeholder="ملاحظة">
+    </div>
+    <div class="citems" id="citems"></div>
+    <div class="tots">
+      <div class="tr sub"><span>المجموع الفرعي</span><span id="t-sub">0 د.ع</span></div>
+      <div class="drow">
+        <input type="number" id="d-inp" placeholder="خصم %" min="0" max="100">
+        <button class="dapply" onclick="applyDisc()">تطبيق</button>
+      </div>
+      <div class="tr disc" id="d-row" style="display:none"><span>الخصم</span><span id="t-disc"></span></div>
+      <div class="tr grd"><span>الإجمالي</span><span id="t-grd">0 د.ع</span></div>
+    </div>
+    <div class="pay-sec">
+      <label>طريقة الدفع</label>
+      <div class="pbtns">
+        <button class="pb on" data-p="cash" onclick="selPay(this)"><span class="pi">💵</span>نقدي</button>
+        <button class="pb" data-p="card" onclick="selPay(this)"><span class="pi">💳</span>بطاقة</button>
+        <button class="pb" data-p="transfer" onclick="selPay(this)"><span class="pi">📱</span>تحويل</button>
+        <button class="pb" data-p="debt" onclick="selPay(this)"><span class="pi">📋</span>دَين</button>
+      </div>
+    </div>
+    <div class="chk-sec">
+      <button class="chkbtn" id="chkbtn" onclick="checkout()" disabled>💰 إتمام البيع</button>
+    </div>
+  </div>
+</div>
+
+<!-- STORAGE -->
+<div class="page spage" id="pg-storage">
+  <div class="phdr"><h2>📦 إدارة <span>المخزن</span></h2>
+    <div class="tool-row">
+      <input id="stg-srch" placeholder="🔍 بحث..." oninput="renderStorage()">
+      <button class="btn-add" onclick="openAddProd()">+ منتج</button>
+    </div>
+  </div>
+  <div class="tbl-wrap">
+    <table class="tbl"><thead><tr>
+      <th>المنتج</th><th>الفئة</th><th>شراء</th><th>بيع</th><th>ربح%</th>
+      <th>مخزن</th><th>بيع</th><th>حالة</th><th>إجراء</th>
+    </tr></thead><tbody id="stg-body"></tbody></table>
+  </div>
+</div>
+
+<!-- DEBTS -->
+<div class="page spage" id="pg-debts">
+  <div class="debt-summary">
+    <div><h3>إجمالي الديون المستحقة</h3><div class="debt-tv" id="debt-total">0 د.ع</div></div>
+    <button class="btn-add" onclick="openAddDebt()">+ دين جديد</button>
+  </div>
+  <div class="dgrid" id="dgrid"></div>
+</div>
+
+<!-- SUPPLIERS -->
+<div class="page spage" id="pg-suppliers">
+  <div class="phdr"><h2>🏪 حسابات <span>الموردون</span></h2>
+    <button class="btn-add" onclick="openAddSupplier()">+ مورد جديد</button>
+  </div>
+  <div class="stat-cards" id="sup-stats"></div>
+  <div class="sup-grid" id="sup-grid"></div>
+</div>
+
+<!-- CUSTOMERS -->
+<div class="page spage" id="pg-customers">
+  <div class="phdr"><h2>👥 سجل <span>العملاء</span></h2>
+    <div class="tool-row">
+      <input id="cust-srch" placeholder="🔍 بحث باسم أو هاتف..." oninput="renderCustomers()">
+    </div>
+  </div>
+  <div class="cust-grid" id="cust-grid"></div>
+</div>
+
+<!-- REPORTS -->
+<div class="page spage" id="pg-reports">
+  <div class="phdr"><h2>📊 <span>التقارير اليومية</span></h2>
+    <button class="btn-add" onclick="printReport()">🖨️ طباعة التقرير</button>
+  </div>
+  <div class="stat-cards" id="rpt-summary"></div>
+  <div style="margin-top:4px;font-size:13px;font-weight:700;color:var(--text2)">سجل الأيام</div>
+  <div class="tbl-wrap">
+    <table class="tbl"><thead><tr>
+      <th>التاريخ</th><th>المبيعات</th><th>التكلفة</th><th>الربح</th><th>الخسارة</th><th>عدد الفواتير</th><th>نسبة الربح</th>
+    </tr></thead><tbody id="rpt-body"></tbody></table>
+  </div>
+</div>
+
+<!-- TX LOG -->
+<div class="page spage" id="pg-txlog">
+  <div class="phdr"><h2>📜 <span>سجل العمليات</span></h2>
+    <div class="tool-row">
+      <input id="tx-srch" placeholder="🔍 بحث..." oninput="renderTxLog()">
+      <select id="tx-filter" onchange="renderTxLog()" style="padding:7px 10px;background:var(--panel);border:1px solid var(--border);border-radius:7px;font-size:11px;color:var(--text);outline:none;">
+        <option value="all">الكل</option>
+        <option value="sale">مبيعات</option>
+        <option value="purchase">مشتريات</option>
+        <option value="debt_pay">سداد ديون</option>
+        <option value="sup_pay">دفع موردون</option>
+      </select>
+    </div>
+  </div>
+  <div class="tbl-wrap">
+    <table class="tbl"><thead><tr>
+      <th>التاريخ</th><th>النوع</th><th>العميل/المورد</th><th>المبلغ</th><th>التفاصيل</th><th>إجراء</th>
+    </tr></thead><tbody id="tx-body"></tbody></table>
+  </div>
+</div>
+</div><!-- /app -->
 
 <!-- ═══ MODALS ═══ -->
 
 <!-- Add/Edit Product -->
 <div class="overlay" id="mo-prod">
-  <div class="modal">
-    <h3 id="mo-prod-ttl">إضافة منتج</h3>
-    <input type="hidden" id="mp-id">
-    <div class="mf"><label>اسم المنتج *</label><input type="text" id="mp-name" placeholder="اسم المنتج"></div>
-    <div class="mf-row">
-      <div class="mf"><label>الفئة</label><input type="text" id="mp-cat" placeholder="مثال: زيوت، فلاتر..."></div>
-      <div class="mf"><label>رمز (Emoji)</label><input type="text" id="mp-emoji" placeholder="📦" maxlength="4"></div>
-    </div>
-    <div class="mf-row">
-      <div class="mf"><label>سعر الشراء (د.ع) *</label><input type="number" id="mp-buy" placeholder="0" min="0" oninput="calcProfit()"></div>
-      <div class="mf"><label>سعر البيع (د.ع) *</label><input type="number" id="mp-sell" placeholder="0" min="0" oninput="calcProfit()"></div>
-    </div>
-    <div class="price-info" id="profit-preview">
-      <span>الربح لكل قطعة: <span id="pp-amt" class="profit-hi">0 د.ع</span></span>
-      <span>نسبة الربح: <span id="pp-pct" class="profit-hi">0%</span></span>
-    </div>
-    <div class="mf-row">
-      <div class="mf"><label>كمية المخزن *</label><input type="number" id="mp-stgstock" placeholder="0" min="0"></div>
-      <div class="mf"><label>كمية نقطة البيع</label><input type="number" id="mp-posstock" placeholder="0" min="0"></div>
-    </div>
-    <div class="mf"><label>حد التنبيه (إجمالي)</label><input type="number" id="mp-min" placeholder="3" min="0"></div>
-    <div class="mbns">
-      <button class="mbtn s" onclick="saveProd()">حفظ</button>
-      <button class="mbtn c" onclick="closeModal('mo-prod')">إلغاء</button>
-    </div>
+<div class="modal">
+  <h3 id="mo-prod-ttl">إضافة منتج</h3>
+  <input type="hidden" id="mp-id">
+  <div class="mf"><label>اسم المنتج *</label><input id="mp-name" placeholder="اسم المنتج"></div>
+  <div class="mfrow">
+    <div class="mf"><label>الفئة</label><input id="mp-cat" placeholder="فئة"></div>
+    <div class="mf"><label>Emoji</label><input id="mp-emo" placeholder="📦" maxlength="4"></div>
+  </div>
+  <div class="mfrow">
+    <div class="mf"><label>سعر الشراء (د.ع) *</label><input type="number" id="mp-buy" placeholder="0" oninput="calcProfit()"></div>
+    <div class="mf"><label>سعر البيع (د.ع) *</label><input type="number" id="mp-sell" placeholder="0" oninput="calcProfit()"></div>
+  </div>
+  <div class="price-preview">
+    <span>الربح/قطعة: <span id="pp-a" class="ph">0 د.ع</span></span>
+    <span>النسبة: <span id="pp-p" class="ph">0%</span></span>
+  </div>
+  <div class="mfrow">
+    <div class="mf"><label>كمية المخزن</label><input type="number" id="mp-stg" placeholder="0"></div>
+    <div class="mf"><label>كمية نقطة البيع</label><input type="number" id="mp-pos" placeholder="0"></div>
+  </div>
+  <div class="mf"><label>حد التنبيه</label><input type="number" id="mp-min" placeholder="3"></div>
+  <div class="mbns">
+    <button class="mbtn s" onclick="saveProd()">حفظ</button>
+    <button class="mbtn c" onclick="closeM('mo-prod')">إلغاء</button>
   </div>
 </div>
+</div>
 
-<!-- Transfer modal -->
+<!-- Transfer -->
 <div class="overlay" id="mo-trans">
-  <div class="modal">
-    <h3>📦 نقل من المخزن إلى نقطة البيع</h3>
-    <input type="hidden" id="mt-id">
-    <div class="trans-info">
-      <div class="ti-name" id="mt-name"></div>
-      <div class="ti-stock">المخزن: <strong id="mt-stg-q"></strong> | نقطة البيع: <strong id="mt-pos-q"></strong></div>
-    </div>
-    <div class="mf"><label>الكمية المراد نقلها *</label><input type="number" id="mt-qty" placeholder="0" min="1"></div>
-    <div class="mbns">
-      <button class="mbtn g" onclick="doTransfer()">نقل ➜ نقطة البيع</button>
-      <button class="mbtn c" onclick="closeModal('mo-trans')">إلغاء</button>
-    </div>
+<div class="modal">
+  <h3>📦 نقل إلى نقطة البيع</h3>
+  <input type="hidden" id="mt-id">
+  <div class="pinfo"><div class="pi-nm" id="mt-nm"></div><div class="pi-det" id="mt-det"></div></div>
+  <div class="mf"><label>الكمية *</label><input type="number" id="mt-qty" placeholder="0" min="1"></div>
+  <div class="mbns">
+    <button class="mbtn g" onclick="doTransfer()">نقل ←</button>
+    <button class="mbtn c" onclick="closeM('mo-trans')">إلغاء</button>
   </div>
 </div>
+</div>
 
-<!-- Add Debt -->
+<!-- Add/Edit Debt -->
 <div class="overlay" id="mo-debt">
-  <div class="modal">
-    <h3>تسجيل دين</h3>
-    <div class="mf"><label>اسم العميل *</label><input type="text" id="md-name" placeholder="الاسم الكامل"></div>
-    <div class="mf"><label>رقم الهاتف</label><input type="text" id="md-phone" placeholder="07xx xxx xxxx"></div>
-    <div class="mf"><label>المبلغ (د.ع) *</label><input type="number" id="md-amount" placeholder="0" min="0"></div>
-    <div class="mf"><label>تفاصيل / ملاحظات</label><textarea id="md-note" placeholder="تفاصيل البضاعة..."></textarea></div>
-    <div class="mbns">
-      <button class="mbtn s" onclick="saveDebt()">تسجيل</button>
-      <button class="mbtn c" onclick="closeModal('mo-debt')">إلغاء</button>
-    </div>
+<div class="modal">
+  <h3>تسجيل دين</h3>
+  <input type="hidden" id="md-id">
+  <div class="mf"><label>اسم العميل *</label><input id="md-name" placeholder="الاسم"></div>
+  <div class="mf"><label>رقم الهاتف</label><input id="md-phone" placeholder="07xx..."></div>
+  <div class="mf"><label>المبلغ (د.ع) *</label><input type="number" id="md-amt" placeholder="0"></div>
+  <div class="mf"><label>تفاصيل</label><textarea id="md-note" placeholder="تفاصيل البضاعة..."></textarea></div>
+  <div class="mbns">
+    <button class="mbtn s" onclick="saveDebt()">تسجيل</button>
+    <button class="mbtn c" onclick="closeM('mo-debt')">إلغاء</button>
   </div>
 </div>
+</div>
 
-<!-- Partial Payment -->
-<div class="overlay" id="mo-pay">
-  <div class="modal">
-    <h3>تسجيل دفعة</h3>
-    <input type="hidden" id="mpay-id">
-    <div class="trans-info">
-      <div class="ti-name" id="mpay-name"></div>
-      <div class="ti-stock" id="mpay-remain"></div>
-    </div>
-    <div class="mf"><label>المبلغ المدفوع (د.ع) *</label><input type="number" id="mpay-amt" placeholder="0" min="0"></div>
-    <div class="mf"><label>ملاحظة</label><input type="text" id="mpay-note" placeholder="اختياري"></div>
-    <div class="mbns">
-      <button class="mbtn g" onclick="savePayment()">تسجيل الدفعة</button>
-      <button class="mbtn c" onclick="closeModal('mo-pay')">إلغاء</button>
-    </div>
+<!-- Debt Payment -->
+<div class="overlay" id="mo-dpay">
+<div class="modal">
+  <h3>سند قبض</h3>
+  <input type="hidden" id="dp-id">
+  <div class="pinfo"><div class="pi-nm" id="dp-nm"></div><div class="pi-det" id="dp-det"></div></div>
+  <div class="mf"><label>المبلغ المستلم (د.ع) *</label><input type="number" id="dp-amt" placeholder="0"></div>
+  <div class="mf"><label>ملاحظة</label><input id="dp-note" placeholder="اختياري"></div>
+  <div class="mbns">
+    <button class="mbtn g" onclick="saveDebtPay()">✅ تسجيل القبض</button>
+    <button class="mbtn c" onclick="closeM('mo-dpay')">إلغاء</button>
   </div>
+</div>
+</div>
+
+<!-- Add Supplier -->
+<div class="overlay" id="mo-sup">
+<div class="modal">
+  <h3 id="mo-sup-ttl">إضافة مورد</h3>
+  <input type="hidden" id="ms-id">
+  <div class="mf"><label>اسم المورد / المتجر *</label><input id="ms-name" placeholder="اسم المتجر"></div>
+  <div class="mf"><label>رقم الهاتف</label><input id="ms-phone" placeholder="07xx..."></div>
+  <div class="mf"><label>ملاحظات</label><textarea id="ms-note" placeholder="عنوان، تفاصيل..."></textarea></div>
+  <div class="mbns">
+    <button class="mbtn s" onclick="saveSupplier()">حفظ</button>
+    <button class="mbtn c" onclick="closeM('mo-sup')">إلغاء</button>
+  </div>
+</div>
+</div>
+
+<!-- Supplier Purchase -->
+<div class="overlay" id="mo-sup-buy">
+<div class="modal">
+  <h3>تسجيل مشتريات من المورد</h3>
+  <input type="hidden" id="sb-id">
+  <div class="pinfo"><div class="pi-nm" id="sb-nm"></div><div class="pi-det" id="sb-det"></div></div>
+  <div class="mf"><label>المبلغ المشترى (د.ع) *</label><input type="number" id="sb-amt" placeholder="0"></div>
+  <div class="mf"><label>هل دُفع الآن؟</label>
+    <select id="sb-paid">
+      <option value="yes">نعم — مدفوع بالكامل</option>
+      <option value="no">لا — مستحق عليّ</option>
+      <option value="partial">جزئي</option>
+    </select>
+  </div>
+  <div class="mf" id="sb-partial-wrap" style="display:none"><label>المبلغ المدفوع الآن</label><input type="number" id="sb-paid-amt" placeholder="0"></div>
+  <div class="mf"><label>ملاحظة / البضاعة</label><textarea id="sb-note" placeholder="تفاصيل..."></textarea></div>
+  <div class="mbns">
+    <button class="mbtn s" onclick="saveSupBuy()">تسجيل</button>
+    <button class="mbtn c" onclick="closeM('mo-sup-buy')">إلغاء</button>
+  </div>
+</div>
+</div>
+
+<!-- Supplier Payment -->
+<div class="overlay" id="mo-sup-pay">
+<div class="modal">
+  <h3>تسديد مبلغ للمورد</h3>
+  <input type="hidden" id="sp-id">
+  <div class="pinfo"><div class="pi-nm" id="sp-nm"></div><div class="pi-det" id="sp-det"></div></div>
+  <div class="mf"><label>المبلغ المدفوع (د.ع) *</label><input type="number" id="sp-amt" placeholder="0"></div>
+  <div class="mf"><label>ملاحظة</label><input id="sp-note" placeholder="اختياري"></div>
+  <div class="mbns">
+    <button class="mbtn b" onclick="saveSupPay()">تسديد</button>
+    <button class="mbtn c" onclick="closeM('mo-sup-pay')">إلغاء</button>
+  </div>
+</div>
+</div>
+
+<!-- Edit Sale Item -->
+<div class="overlay" id="mo-edit-tx">
+<div class="modal">
+  <h3>تعديل السعر / العملية</h3>
+  <input type="hidden" id="etx-id">
+  <div class="pinfo"><div class="pi-nm" id="etx-nm"></div><div class="pi-det" id="etx-det"></div></div>
+  <div class="mf"><label>المبلغ الجديد (د.ع) *</label><input type="number" id="etx-amt" placeholder="0"></div>
+  <div class="mf"><label>سبب التعديل</label><input id="etx-reason" placeholder="اختياري"></div>
+  <div class="mbns">
+    <button class="mbtn s" onclick="saveEditTx()">حفظ التعديل</button>
+    <button class="mbtn c" onclick="closeM('mo-edit-tx')">إلغاء</button>
+  </div>
+</div>
+</div>
+
+<!-- Supplier Log -->
+<div class="overlay" id="mo-sup-log">
+<div class="modal" style="max-width:480px">
+  <h3 id="sup-log-ttl">سجل المورد</h3>
+  <div id="sup-log-body" style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;max-height:55vh;overflow-y:auto;"></div>
+  <div class="mbns"><button class="mbtn c" onclick="closeM('mo-sup-log')">إغلاق</button></div>
+</div>
+</div>
+
+<!-- Customer Detail -->
+<div class="overlay" id="mo-cust-det">
+<div class="modal" style="max-width:480px">
+  <h3 id="cust-det-ttl">سجل العميل</h3>
+  <div id="cust-det-body" style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;max-height:55vh;overflow-y:auto;"></div>
+  <div class="mbns"><button class="mbtn c" onclick="closeM('mo-cust-det')">إغلاق</button></div>
+</div>
 </div>
 
 <!-- Receipt -->
 <div class="overlay" id="mo-rcpt">
-  <div class="rcpt-modal">
-    <div class="rcpt-ico">✅</div>
-    <div class="rcpt-ttl">تمت العملية</div>
-    <div class="rcpt-sub" id="rcpt-sub"></div>
-    <div class="rcpt-rows" id="rcpt-rows"></div>
-    <div class="rcpt-note" id="rcpt-note" style="display:none"></div>
-    <div class="rcpt-bns">
-      <button class="rcpt-btn pr" onclick="printSaleReceipt()">🖨️ طباعة</button>
-      <button class="rcpt-btn nw" onclick="newSale()">➕ جديد</button>
-    </div>
+<div class="rcpt-modal">
+  <div class="rc-ico">✅</div>
+  <div class="rc-ttl">تمت العملية</div>
+  <div class="rc-sub" id="rc-sub"></div>
+  <div class="rc-rows" id="rc-rows"></div>
+  <div class="rc-note" id="rc-note" style="display:none"></div>
+  <div class="rc-bns">
+    <button class="rc-btn pr" onclick="printSaleRcpt()">🖨️ طباعة</button>
+    <button class="rc-btn nw" onclick="newSale()">➕ جديد</button>
   </div>
 </div>
+</div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 //  STATE
-// ══════════════════════════════════════
-let products=JSON.parse(localStorage.getItem('zrq2-products')||'[]');
-let debts   =JSON.parse(localStorage.getItem('zrq2-debts')   ||'[]');
-let cart=[], discPct=0, payMode='cash';
-let activeCat='all';
-let currentReceipt=null;
-let dailySales=0, txCount=0;
+// ══════════════════════════════════════════════════════════
+const LS = {
+  get(k){try{return JSON.parse(localStorage.getItem('zrq3-'+k)||'null');}catch(e){return null;}},
+  set(k,v){localStorage.setItem('zrq3-'+k,JSON.stringify(v));}
+};
+let products  = LS.get('products')  || [];
+let debts     = LS.get('debts')     || [];
+let suppliers = LS.get('suppliers') || [];
+let txLog     = LS.get('txlog')     || [];  // all transactions
+let dailyRpt  = LS.get('daily')     || {};  // {date: {sales,cost,profit,loss,count}}
 
-function save(){
-  localStorage.setItem('zrq2-products',JSON.stringify(products));
-  localStorage.setItem('zrq2-debts',   JSON.stringify(debts));
-}
-function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,5); }
-function fmt(n){ return Number(n||0).toLocaleString('ar-IQ')+' د.ع'; }
-function profitPct(buy,sell){
-  if(!buy||!sell||buy<=0)return 0;
-  return Math.round((sell-buy)/buy*100);
-}
+let cart=[], discPct=0, payMode='cash', activeCat='all';
+let currentRcpt=null;
 
-// ══════════════════════════════════════
+function saveAll(){
+  LS.set('products',products); LS.set('debts',debts);
+  LS.set('suppliers',suppliers); LS.set('txlog',txLog);
+  LS.set('daily',dailyRpt);
+}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function fmt(n){return Number(n||0).toLocaleString('ar-IQ')+' د.ع';}
+function today(){return new Date().toLocaleDateString('ar-IQ');}
+function now(){return new Date().toLocaleString('ar-IQ');}
+function profPct(b,s){if(!b||b<=0)return 0;return Math.round((s-b)/b*100);}
+
+// ══════════════════════════════════════════════════════════
 //  LOGIN
-// ══════════════════════════════════════
-document.getElementById('l-pass').addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
+// ══════════════════════════════════════════════════════════
+document.getElementById('l-p').onkeydown=e=>{if(e.key==='Enter')doLogin();};
 function doLogin(){
-  const u=document.getElementById('l-user').value.trim().toLowerCase();
-  const p=document.getElementById('l-pass').value;
-  if(u==='alzergany'&&p==='2008'){
+  if(document.getElementById('l-u').value.trim().toLowerCase()==='alzergany'&&document.getElementById('l-p').value==='2008'){
     document.getElementById('login-screen').style.display='none';
-    document.getElementById('app').classList.add('visible');
+    document.getElementById('app').classList.add('on');
     renderAll();
-  } else {
-    document.getElementById('l-err').textContent='اسم المستخدم أو كلمة المرور غير صحيحة';
-    document.getElementById('l-pass').value='';
-  }
+  }else{document.getElementById('l-err').textContent='بيانات خاطئة';}
 }
-function doLogout(){
-  if(!confirm('تسجيل الخروج؟'))return;
-  document.getElementById('app').classList.remove('visible');
-  document.getElementById('login-screen').style.display='flex';
-  document.getElementById('l-user').value='';
-  document.getElementById('l-pass').value='';
-  document.getElementById('l-err').textContent='';
+function doLogout(){if(!confirm('تسجيل الخروج؟'))return;location.reload();}
+
+// ══════════════════════════════════════════════════════════
+//  NAV
+// ══════════════════════════════════════════════════════════
+function goPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('on'));
+  document.getElementById('pg-'+id).classList.add('on');
+  btn.classList.add('on');
+  ({storage:renderStorage,debts:renderDebts,suppliers:renderSuppliers,
+    customers:renderCustomers,reports:renderReports,txlog:renderTxLog}[id]||Function)();
 }
 
-// ══════════════════════════════════════
-//  NAVIGATION
-// ══════════════════════════════════════
-function switchPage(id,btn){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  btn.classList.add('active');
-  if(id==='storage') renderStorage();
-  if(id==='debts')   renderDebts();
-}
-
-// ══════════════════════════════════════
-//  BACKUP / RESTORE
-// ══════════════════════════════════════
-function exportBackup(){
-  const data={products,debts,exported:new Date().toISOString()};
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+// ══════════════════════════════════════════════════════════
+//  BACKUP
+// ══════════════════════════════════════════════════════════
+function exportBk(){
+  const blob=new Blob([JSON.stringify({products,debts,suppliers,txLog,dailyRpt,ts:new Date().toISOString()},null,2)],{type:'application/json'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
-  a.download='alzergany-backup-'+new Date().toLocaleDateString('en').replace(/\//g,'-')+'.json';
-  a.click();
-  showToast('✅ تم تصدير النسخة الاحتياطية');
+  a.download='alzergany-'+new Date().toLocaleDateString('en').replace(/\//g,'-')+'.json';
+  a.click(); toast('✅ تم تصدير النسخة الاحتياطية');
 }
-function importBackup(inp){
-  const file=inp.files[0]; if(!file)return;
-  const reader=new FileReader();
-  reader.onload=e=>{
+function importBk(inp){
+  const f=inp.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{
     try{
-      const data=JSON.parse(e.target.result);
-      if(!data.products||!data.debts)throw new Error('ملف غير صالح');
-      if(!confirm('سيتم استبدال جميع البيانات بالنسخة الاحتياطية. هل أنت متأكد؟'))return;
-      products=data.products; debts=data.debts;
-      save(); renderAll();
-      showToast('✅ تم استيراد البيانات بنجاح');
-    }catch(err){ showToast('❌ ملف غير صالح','err'); }
+      const d=JSON.parse(e.target.result);
+      if(!d.products)throw 1;
+      if(!confirm('استبدال كل البيانات؟'))return;
+      products=d.products||[];debts=d.debts||[];
+      suppliers=d.suppliers||[];txLog=d.txLog||[];dailyRpt=d.dailyRpt||{};
+      saveAll();renderAll();toast('✅ تم الاستيراد');
+    }catch(e){toast('❌ ملف غير صالح','err');}
   };
-  reader.readAsText(file);
-  inp.value='';
+  r.readAsText(f);inp.value='';
 }
 
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 //  PRODUCTS
-// ══════════════════════════════════════
-function getCats(){ return [...new Set(products.map(p=>p.cat).filter(Boolean))]; }
-
+// ══════════════════════════════════════════════════════════
+function cats(){return [...new Set(products.map(p=>p.cat).filter(Boolean))];}
 function renderCats(){
-  const row=document.getElementById('cats-row');
-  const cats=getCats();
-  row.innerHTML=`<div class="cat-chip ${activeCat==='all'?'active':''}" onclick="setCat('all')">الكل</div>`
-    +cats.map(c=>`<div class="cat-chip ${activeCat===c?'active':''}" onclick="setCat('${c}')">${c}</div>`).join('');
+  document.getElementById('cats-row').innerHTML=
+    `<div class="cchip ${activeCat==='all'?'on':''}" onclick="setCat('all')">الكل</div>`
+    +cats().map(c=>`<div class="cchip ${activeCat===c?'on':''}" onclick="setCat('${c.replace(/'/g,"\\'")}')"> ${c}</div>`).join('');
 }
-function setCat(c){ activeCat=c; renderProds(); }
-
+function setCat(c){activeCat=c;renderProds();}
 function renderProds(){
   renderCats();
-  const q=document.getElementById('pos-srch').value.trim().toLowerCase();
-  const grid=document.getElementById('prods-grid');
+  // update customer autocomplete
+  const names=[...new Set(txLog.filter(t=>t.customer).map(t=>t.customer))];
+  document.getElementById('cust-list').innerHTML=names.map(n=>`<option value="${n}">`).join('');
+  const q=document.getElementById('ps-srch').value.trim().toLowerCase();
+  const g=document.getElementById('pgrid');
   let list=products.filter(p=>{
-    const mc=activeCat==='all'||p.cat===activeCat;
-    const mq=!q||p.name.toLowerCase().includes(q)||(p.cat||'').toLowerCase().includes(q);
-    return mc&&mq;
+    return (activeCat==='all'||p.cat===activeCat)&&(!q||p.name.toLowerCase().includes(q)||(p.cat||'').toLowerCase().includes(q));
   });
   if(!list.length){
-    grid.innerHTML=products.length===0
-      ?`<div class="empty-grid"><div class="eg">📦</div><p>لا توجد منتجات<br><strong>اضغط "+ إضافة"</strong></p></div>`
-      :`<div class="empty-grid"><div class="eg">🔍</div><p>لا نتائج</p></div>`;
+    g.innerHTML=products.length?`<div class="empty-g"><div class="eg">🔍</div><p>لا نتائج</p></div>`
+      :`<div class="empty-g"><div class="eg">📦</div><p>لا توجد منتجات<br><strong>اضغط "+ إضافة"</strong></p></div>`;
     return;
   }
-  grid.innerHTML=list.map(p=>{
-    const posStock=p.posstock||0;
-    const oos=posStock<=0;
-    const low=posStock>0&&posStock<=(p.min||3);
-    const badge=oos?`<span class="pc-stock-badge out">نفذ</span>`
-      :low?`<span class="pc-stock-badge low">${posStock}</span>`:'';
-    const pct=profitPct(p.buy,p.sell);
-    return `<div class="prod-card ${oos?'oos':''}" onclick="${oos?'':'addToCart(\''+p.id+'\')'}">
-      ${badge}
-      <button class="pc-edit-btn" onclick="event.stopPropagation();openEditProd('${p.id}')">✏️</button>
-      <div class="pc-emoji">${p.emoji||'📦'}</div>
-      <div class="pc-name">${p.name}</div>
-      <div class="pc-cat">${p.cat||''}</div>
-      <div class="pc-sell">${fmt(p.sell)}</div>
-      <div class="pc-profit">ربح ${pct}%</div>
+  g.innerHTML=list.map(p=>{
+    const ps=p.posstock||0,oos=ps<=0,low=ps>0&&ps<=(p.min||3);
+    const badge=oos?`<span class="pbadge out">نفذ</span>`:low?`<span class="pbadge low">${ps}</span>`:'';
+    const pct=profPct(p.buy,p.sell);
+    return `<div class="pcard ${oos?'oos':''}" onclick="${oos?'':'addToCart(\''+p.id+'\')'}">
+      ${badge}<button class="pedit" onclick="event.stopPropagation();openEditProd('${p.id}')">✏️</button>
+      <div class="pc-em">${p.emoji||'📦'}</div>
+      <div class="pc-nm">${p.name}</div>
+      <div class="pc-ct">${p.cat||''}</div>
+      <div class="pc-pr">${fmt(p.sell)}</div>
+      <div class="pc-pf">ربح ${pct}%</div>
     </div>`;
   }).join('');
 }
-
 function calcProfit(){
-  const buy=parseFloat(document.getElementById('mp-buy').value)||0;
-  const sell=parseFloat(document.getElementById('mp-sell').value)||0;
-  const amt=sell-buy;
-  const pct=buy>0?Math.round(amt/buy*100):0;
-  document.getElementById('pp-amt').textContent=fmt(amt);
-  document.getElementById('pp-pct').textContent=pct+'%';
-  document.getElementById('pp-amt').style.color=amt>=0?'var(--green2)':'var(--red2)';
+  const b=+document.getElementById('mp-buy').value||0,s=+document.getElementById('mp-sell').value||0;
+  const a=s-b,pct=b>0?Math.round(a/b*100):0;
+  const ea=document.getElementById('pp-a'),ep=document.getElementById('pp-p');
+  ea.textContent=fmt(a);ep.textContent=pct+'%';
+  ea.className='ph'+(a<0?' neg':'');ep.className='ph'+(a<0?' neg':'');
 }
-
 function openAddProd(){
-  document.getElementById('mo-prod-ttl').textContent='إضافة منتج جديد';
+  document.getElementById('mo-prod-ttl').textContent='إضافة منتج';
   document.getElementById('mp-id').value='';
-  ['mp-name','mp-cat','mp-emoji','mp-buy','mp-sell','mp-stgstock','mp-posstock','mp-min'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('pp-amt').textContent='0 د.ع';
-  document.getElementById('pp-pct').textContent='0%';
-  openModal('mo-prod');
+  ['mp-name','mp-cat','mp-emo','mp-buy','mp-sell','mp-stg','mp-pos','mp-min'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('pp-a').textContent='0 د.ع';document.getElementById('pp-p').textContent='0%';
+  openM('mo-prod');
 }
 function openEditProd(id){
-  const p=products.find(x=>x.id===id); if(!p)return;
+  const p=products.find(x=>x.id===id);if(!p)return;
   document.getElementById('mo-prod-ttl').textContent='تعديل المنتج';
   document.getElementById('mp-id').value=p.id;
   document.getElementById('mp-name').value=p.name;
   document.getElementById('mp-cat').value=p.cat||'';
-  document.getElementById('mp-emoji').value=p.emoji||'';
+  document.getElementById('mp-emo').value=p.emoji||'';
   document.getElementById('mp-buy').value=p.buy||'';
   document.getElementById('mp-sell').value=p.sell||'';
-  document.getElementById('mp-stgstock').value=p.stgstock||0;
-  document.getElementById('mp-posstock').value=p.posstock||0;
+  document.getElementById('mp-stg').value=p.stgstock||0;
+  document.getElementById('mp-pos').value=p.posstock||0;
   document.getElementById('mp-min').value=p.min||3;
-  calcProfit();
-  openModal('mo-prod');
+  calcProfit();openM('mo-prod');
 }
 function saveProd(){
   const name=document.getElementById('mp-name').value.trim();
-  const buy=parseFloat(document.getElementById('mp-buy').value)||0;
-  const sell=parseFloat(document.getElementById('mp-sell').value)||0;
-  if(!name){showToast('❌ أدخل اسم المنتج','err');return;}
+  if(!name){toast('❌ أدخل اسم المنتج','err');return;}
   const id=document.getElementById('mp-id').value;
-  const data={
+  const d={
     id:id||uid(),name,
     cat:document.getElementById('mp-cat').value.trim(),
-    emoji:document.getElementById('mp-emoji').value.trim()||'📦',
-    buy,sell,
-    stgstock:parseInt(document.getElementById('mp-stgstock').value)||0,
-    posstock:parseInt(document.getElementById('mp-posstock').value)||0,
-    min:parseInt(document.getElementById('mp-min').value)||3
+    emoji:document.getElementById('mp-emo').value.trim()||'📦',
+    buy:+document.getElementById('mp-buy').value||0,
+    sell:+document.getElementById('mp-sell').value||0,
+    stgstock:+document.getElementById('mp-stg').value||0,
+    posstock:+document.getElementById('mp-pos').value||0,
+    min:+document.getElementById('mp-min').value||3
   };
-  if(id){ const i=products.findIndex(p=>p.id===id); if(i>-1)products[i]=data; }
-  else products.push(data);
-  save(); renderProds(); renderStorage();
-  closeModal('mo-prod'); showToast('✅ تم حفظ المنتج');
+  if(id){const i=products.findIndex(x=>x.id===id);if(i>-1)products[i]=d;}
+  else products.push(d);
+  saveAll();renderProds();renderStorage();closeM('mo-prod');toast('✅ تم حفظ المنتج');
 }
-function deleteProd(id){
-  if(!confirm('حذف هذا المنتج؟'))return;
+function delProd(id){
+  if(!confirm('حذف؟'))return;
   products=products.filter(p=>p.id!==id);
-  save(); renderProds(); renderStorage();
-  showToast('🗑️ تم الحذف');
+  saveAll();renderProds();renderStorage();toast('🗑️ تم الحذف');
 }
 
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 //  TRANSFER
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 function openTransfer(id){
-  const p=products.find(x=>x.id===id); if(!p)return;
+  const p=products.find(x=>x.id===id);if(!p)return;
   document.getElementById('mt-id').value=id;
-  document.getElementById('mt-name').textContent=p.emoji+' '+p.name;
-  document.getElementById('mt-stg-q').textContent=p.stgstock||0;
-  document.getElementById('mt-pos-q').textContent=p.posstock||0;
-  document.getElementById('mt-qty').value='';
-  openModal('mo-trans');
+  document.getElementById('mt-nm').textContent=p.emoji+' '+p.name;
+  document.getElementById('mt-det').textContent=`المخزن: ${p.stgstock||0} | نقطة البيع: ${p.posstock||0}`;
+  document.getElementById('mt-qty').value='';openM('mo-trans');
 }
 function doTransfer(){
   const id=document.getElementById('mt-id').value;
-  const p=products.find(x=>x.id===id); if(!p)return;
-  const qty=parseInt(document.getElementById('mt-qty').value)||0;
-  if(qty<=0){showToast('❌ أدخل كمية صحيحة','err');return;}
-  if(qty>(p.stgstock||0)){showToast('❌ الكمية أكبر من المخزن','err');return;}
-  p.stgstock=(p.stgstock||0)-qty;
-  p.posstock=(p.posstock||0)+qty;
-  save(); renderStorage(); renderProds();
-  closeModal('mo-trans');
-  showToast(`✅ تم نقل ${qty} قطعة إلى نقطة البيع`);
+  const p=products.find(x=>x.id===id);if(!p)return;
+  const q=+document.getElementById('mt-qty').value||0;
+  if(q<=0){toast('❌ كمية غير صحيحة','err');return;}
+  if(q>(p.stgstock||0)){toast('❌ تجاوز كمية المخزن','err');return;}
+  p.stgstock=(p.stgstock||0)-q;p.posstock=(p.posstock||0)+q;
+  saveAll();renderStorage();renderProds();closeM('mo-trans');
+  toast(`✅ نُقلت ${q} قطعة`);
 }
 
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 //  CART
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 function addToCart(id){
-  const p=products.find(x=>x.id===id);
-  if(!p||(p.posstock||0)<=0)return;
+  const p=products.find(x=>x.id===id);if(!p||(p.posstock||0)<=0)return;
   const ex=cart.find(x=>x.id===id);
-  if(ex){ if(ex.qty>=(p.posstock||0))return; ex.qty++; }
+  if(ex){if(ex.qty>=(p.posstock||0))return;ex.qty++;}
   else cart.push({...p,qty:1});
   renderCart();
 }
 function chgQty(id,d){
-  const it=cart.find(x=>x.id===id); if(!it)return;
-  it.qty+=d;
-  if(it.qty<=0) cart=cart.filter(x=>x.id!==id);
+  const it=cart.find(x=>x.id===id);if(!it)return;
+  it.qty+=d;if(it.qty<=0)cart=cart.filter(x=>x.id!==id);
   renderCart();
 }
-function clearCart(){ cart=[]; discPct=0; document.getElementById('disc-inp').value=''; renderCart(); }
-
+function clearCart(){cart=[];discPct=0;document.getElementById('d-inp').value='';renderCart();}
 function renderCart(){
-  const wrap=document.getElementById('cart-items');
-  document.getElementById('cart-badge').textContent=cart.reduce((s,i)=>s+i.qty,0);
-  if(!cart.length){
-    wrap.innerHTML='<div class="cart-empty">🛒<br>اختر منتجاً من اليسار</div>';
-  } else {
-    wrap.innerHTML=cart.map(it=>`
-      <div class="ci">
-        <div class="ci-ico">${it.emoji||'📦'}</div>
-        <div class="ci-inf">
-          <div class="ci-n">${it.name}</div>
-          <div class="ci-p">${fmt(it.sell)} / قطعة</div>
-        </div>
-        <div class="ci-ctrl">
-          <button class="qb del" onclick="chgQty('${it.id}',-1)">−</button>
-          <span class="qn">${it.qty}</span>
-          <button class="qb" onclick="chgQty('${it.id}',1)">+</button>
-        </div>
-        <div class="ci-tot">${fmt(it.sell*it.qty)}</div>
-      </div>`).join('');
-  }
-  updTotals();
-  document.getElementById('chk-btn').disabled=cart.length===0;
+  const w=document.getElementById('citems');
+  document.getElementById('cbadge').textContent=cart.reduce((s,i)=>s+i.qty,0);
+  w.innerHTML=cart.length?cart.map(it=>`
+    <div class="ci">
+      <div class="ci-ico">${it.emoji||'📦'}</div>
+      <div class="ci-inf"><div class="ci-n">${it.name}</div><div class="ci-p">${fmt(it.sell)}/قطعة</div></div>
+      <div class="ci-ctrl">
+        <button class="qb del" onclick="chgQty('${it.id}',-1)">−</button>
+        <span class="qn">${it.qty}</span>
+        <button class="qb" onclick="chgQty('${it.id}',1)">+</button>
+      </div>
+      <div class="ci-tot">${fmt(it.sell*it.qty)}</div>
+    </div>`).join(''):'<div class="cempty">🛒<br>اختر منتجاً</div>';
+  updTots();
+  document.getElementById('chkbtn').disabled=!cart.length;
 }
-
-function applyDisc(){ discPct=Math.min(100,Math.max(0,parseFloat(document.getElementById('disc-inp').value)||0)); updTotals(); }
-function updTotals(){
+function applyDisc(){discPct=Math.min(100,Math.max(0,+document.getElementById('d-inp').value||0));updTots();}
+function updTots(){
   const sub=cart.reduce((s,i)=>s+i.sell*i.qty,0);
-  const disc=sub*discPct/100;
-  const grand=sub-disc;
+  const disc=sub*discPct/100,grand=sub-disc;
   document.getElementById('t-sub').textContent=fmt(sub);
-  document.getElementById('t-grand').textContent=fmt(grand);
-  const dr=document.getElementById('disc-row');
-  if(discPct>0){ dr.style.display='flex'; document.getElementById('t-disc').textContent='-'+fmt(disc); }
+  document.getElementById('t-grd').textContent=fmt(grand);
+  const dr=document.getElementById('d-row');
+  if(discPct>0){dr.style.display='flex';document.getElementById('t-disc').textContent='-'+fmt(disc);}
   else dr.style.display='none';
 }
-function selPay(btn){
-  document.querySelectorAll('.pb').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active'); payMode=btn.dataset.p;
-}
+function selPay(btn){document.querySelectorAll('.pb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');payMode=btn.dataset.p;}
 
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 //  CHECKOUT
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 function checkout(){
   if(!cart.length)return;
   const sub=cart.reduce((s,i)=>s+i.sell*i.qty,0);
-  const disc=sub*discPct/100;
-  const grand=sub-disc;
-  const profit=cart.reduce((s,i)=>s+(i.sell-i.buy)*i.qty,0)-disc;
-  const custName=document.getElementById('cust-name').value.trim()||'عميل نقدي';
-  const custNote=document.getElementById('cust-note').value.trim();
-  const payLabels={cash:'نقدي',card:'بطاقة',transfer:'تحويل',debt:'دَين'};
+  const cost=cart.reduce((s,i)=>s+i.buy*i.qty,0);
+  const disc=sub*discPct/100,grand=sub-disc;
+  const profit=grand-cost;
+  const custName=document.getElementById('c-name').value.trim()||'عميل نقدي';
+  const custPhone=document.getElementById('c-phone').value.trim();
+  const custNote=document.getElementById('c-note').value.trim();
+  const pLbl={cash:'نقدي',card:'بطاقة',transfer:'تحويل',debt:'دَين'};
+  const txId=uid(),dateNow=today(),timeNow=now();
 
   // deduct posstock
-  cart.forEach(it=>{
-    const p=products.find(x=>x.id===it.id);
-    if(p) p.posstock=Math.max(0,(p.posstock||0)-it.qty);
+  cart.forEach(it=>{const p=products.find(x=>x.id===it.id);if(p)p.posstock=Math.max(0,(p.posstock||0)-it.qty);});
+
+  // daily report
+  if(!dailyRpt[dateNow])dailyRpt[dateNow]={sales:0,cost:0,profit:0,loss:0,count:0};
+  const dr=dailyRpt[dateNow];
+  if(payMode!=='debt'){
+    dr.sales+=grand;dr.cost+=cost;
+    if(profit>=0)dr.profit+=profit;else dr.loss+=Math.abs(profit);
+    dr.count++;
+  }
+
+  // tx log
+  txLog.unshift({
+    id:txId,type:'sale',date:dateNow,time:timeNow,
+    customer:custName,phone:custPhone,
+    amount:grand,cost,profit,disc,discPct,
+    payMode,payLabel:pLbl[payMode],
+    note:custNote,
+    items:cart.map(i=>({id:i.id,name:i.name,emoji:i.emoji,qty:i.qty,sell:i.sell,buy:i.buy}))
   });
 
   if(payMode==='debt'){
     debts.push({
-      id:uid(),name:custName,phone:'',
+      id:uid(),name:custName,phone:custPhone,
       amount:grand,paid:0,
       note:custNote||cart.map(i=>i.name+'×'+i.qty).join('، '),
-      date:new Date().toLocaleDateString('ar-IQ'),
-      items:[...cart.map(i=>({name:i.name,qty:i.qty,sell:i.sell}))]
+      date:dateNow,
+      items:cart.map(i=>({name:i.name,qty:i.qty,sell:i.sell}))
     });
-    save(); renderDebts();
-  } else {
-    dailySales+=grand; txCount++;
   }
-  save();
 
-  currentReceipt={cart:[...cart],sub,disc,grand,profit,custName,custNote,payMode,payLabel:payLabels[payMode]};
-  showReceipt();
+  // update customer record (store in txLog customer field already done)
+  saveAll();
+  currentRcpt={id:txId,cart:[...cart],sub,disc,grand,profit,cost,custName,custPhone,custNote,payMode,payLabel:pLbl[payMode],date:dateNow,time:timeNow};
+  showRcpt();
 }
 
-function showReceipt(){
-  const d=currentReceipt;
-  document.getElementById('rcpt-sub').textContent=(payMode==='debt'?'⚠️ مسجّل كدين على ':'شكراً ')+d.custName;
-  document.getElementById('rcpt-rows').innerHTML=
-    d.cart.map(i=>`<div class="rcpt-r"><span>${i.name} ×${i.qty}</span><span>${fmt(i.sell*i.qty)}</span></div>`).join('')
-    +(d.disc>0?`<div class="rcpt-r"><span>خصم ${discPct}%</span><span style="color:var(--green2)">-${fmt(d.disc)}</span></div>`:'')
-    +`<div class="rcpt-r"><span>طريقة الدفع</span><span>${d.payLabel}</span></div>`
-    +`<div class="rcpt-r grand"><span>الإجمالي</span><span>${fmt(d.grand)}</span></div>`;
-  const nn=document.getElementById('rcpt-note');
-  if(d.custNote){ nn.textContent='ملاحظة: '+d.custNote; nn.style.display='block'; }
-  else nn.style.display='none';
-  openModal('mo-rcpt');
+function showRcpt(){
+  const d=currentRcpt;
+  document.getElementById('rc-sub').textContent=(d.payMode==='debt'?'⚠️ دَين على ':'شكراً ')+d.custName;
+  document.getElementById('rc-rows').innerHTML=
+    d.cart.map(i=>`<div class="rc-r"><span>${i.name} ×${i.qty}</span><span>${fmt(i.sell*i.qty)}</span></div>`).join('')
+    +(d.disc>0?`<div class="rc-r"><span>خصم ${discPct}%</span><span style="color:var(--green2)">-${fmt(d.disc)}</span></div>`:'')
+    +`<div class="rc-r"><span>طريقة الدفع</span><span>${d.payLabel}</span></div>`
+    +`<div class="rc-r grd"><span>الإجمالي</span><span>${fmt(d.grand)}</span></div>`;
+  const nn=document.getElementById('rc-note');
+  if(d.custNote){nn.textContent='ملاحظة: '+d.custNote;nn.style.display='block';}else nn.style.display='none';
+  openM('mo-rcpt');
 }
-
-function printSaleReceipt(){
-  const d=currentReceipt; if(!d)return;
-  printReceiptHTML({
-    title:'فاتورة بيع',
-    customer:d.custName,
-    items:d.cart.map(i=>({name:i.name,qty:i.qty,price:i.sell*i.qty})),
-    disc:d.disc, discPct,
+function printSaleRcpt(){
+  const d=currentRcpt;if(!d)return;
+  printHTML({
+    title:'فاتورة بيع — محل الزرقاني',
+    subtitle:'نظام تبريد السيارات',
+    rows:[
+      {l:'العميل',v:d.custName},{l:'الهاتف',v:d.custPhone||'—'},
+      {l:'التاريخ',v:d.date},{l:'الوقت',v:d.time},{l:'طريقة الدفع',v:d.payLabel}
+    ],
+    items:d.cart.map(i=>({n:i.name+'  ×'+i.qty,v:i.sell*i.qty})),
+    extra:d.disc>0?[{l:'خصم '+discPct+'%',v:-d.disc,green:true}]:[],
     grand:d.grand,
-    payLabel:d.payLabel,
-    note:d.custNote,
-    isDebt:d.payMode==='debt'
+    foot:d.payMode==='debt'?'⚠️ مسجّل كدين':'شكراً لثقتك بمحل الزرقاني 🌡️',
+    note:d.custNote
   });
 }
-
-function printReceiptHTML({title,customer,items,disc,discPct,grand,payLabel,note,isDebt,extraRows}){
-  const now=new Date();
-  const w=window.open('','_blank','width=440,height=720');
-  w.document.write(`<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8">
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0;}
-    body{font-family:Arial,sans-serif;padding:20px;font-size:13px;color:#111;max-width:380px;margin:auto;}
-    .top{text-align:center;margin-bottom:12px;}
-    .top h1{font-size:20px;font-weight:900;}
-    .top .sub{font-size:11px;color:#666;margin-top:2px;}
-    hr{border:none;border-top:1px dashed #ccc;margin:10px 0;}
-    .row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dotted #eee;font-size:12px;}
-    .row.grand{font-weight:bold;font-size:16px;border:none;padding-top:10px;}
-    .row.disc{color:green;}
-    .foot{text-align:center;margin-top:16px;font-size:11px;color:#888;}
-    .badge{display:inline-block;background:#111;color:#fff;padding:3px 9px;border-radius:5px;font-size:10px;margin-top:8px;}
-    .badge.red{background:#c0392b;}
-    @media print{body{padding:0;}}
-  </style></head><body>
-  <div class="top">
-    <h1>🌡️ محل الزرقاني</h1>
-    <div class="sub">${title}</div>
-  </div>
-  <hr>
-  <div class="row"><span>العميل</span><span>${customer}</span></div>
-  <div class="row"><span>التاريخ</span><span>${now.toLocaleDateString('ar-IQ')}</span></div>
-  <div class="row"><span>الوقت</span><span>${now.toLocaleTimeString('ar-IQ')}</span></div>
-  ${payLabel?`<div class="row"><span>الدفع</span><span>${payLabel}</span></div>`:''}
-  <hr>
-  ${items.map(i=>`<div class="row"><span>${i.name} × ${i.qty}</span><span>${i.price.toLocaleString()} د.ع</span></div>`).join('')}
-  ${disc>0?`<div class="row disc"><span>خصم ${discPct||''}%</span><span>-${disc.toLocaleString()} د.ع</span></div>`:''}
-  ${extraRows||''}
-  <div class="row grand"><span>الإجمالي</span><span>${grand.toLocaleString()} د.ع</span></div>
-  ${note?`<hr><div style="font-size:11px;color:#555">ملاحظة: ${note}</div>`:''}
-  <div class="foot">
-    شكراً لثقتك بمحل الزرقاني 🌡️
-    ${isDebt?'<br><span class="badge red">⚠️ مسجّل كدين</span>':''}
-  </div>
-  </body></html>`);
-  w.document.close(); w.focus(); setTimeout(()=>w.print(),400);
-}
-
 function newSale(){
-  closeModal('mo-rcpt'); clearCart();
-  document.getElementById('cust-name').value='';
-  document.getElementById('cust-note').value='';
-  discPct=0; document.getElementById('disc-inp').value='';
-  payMode='cash';
-  document.querySelectorAll('.pb').forEach((b,i)=>b.classList.toggle('active',i===0));
+  closeM('mo-rcpt');clearCart();
+  ['c-name','c-phone','c-note'].forEach(i=>document.getElementById(i).value='');
+  discPct=0;document.getElementById('d-inp').value='';
+  payMode='cash';document.querySelectorAll('.pb').forEach((b,i)=>b.classList.toggle('on',i===0));
   renderProds();
 }
 
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 //  STORAGE
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 function renderStorage(){
-  const q=(document.getElementById('stg-srch')||{}).value||'';
-  const qL=q.trim().toLowerCase();
-  const tbody=document.getElementById('stg-tbody');
-  let list=products.filter(p=>!qL||p.name.toLowerCase().includes(qL)||(p.cat||'').toLowerCase().includes(qL));
-  if(!list.length){
-    tbody.innerHTML=`<tr><td colspan="9" class="empty-tbl">${products.length===0?'لا توجد منتجات':'لا نتائج'}</td></tr>`;
-    return;
-  }
+  const q=(document.getElementById('stg-srch').value||'').trim().toLowerCase();
+  const list=products.filter(p=>!q||p.name.toLowerCase().includes(q)||(p.cat||'').toLowerCase().includes(q));
+  const tbody=document.getElementById('stg-body');
+  if(!list.length){tbody.innerHTML=`<tr><td colspan="9" class="empty-tbl">${products.length?'لا نتائج':'لا توجد منتجات'}</td></tr>`;return;}
   tbody.innerHTML=list.map(p=>{
-    const total=(p.stgstock||0)+(p.posstock||0);
-    const oos=total<=0,low=total>0&&total<=(p.min||3);
-    const badge=oos?'<span class="tbl-badge out">نفذ</span>'
-      :low?'<span class="tbl-badge low">قليل</span>'
-      :'<span class="tbl-badge ok">متوفر</span>';
-    const pct=profitPct(p.buy,p.sell);
+    const tot=(p.stgstock||0)+(p.posstock||0),oos=tot<=0,low=tot>0&&tot<=(p.min||3);
+    const badge=oos?'<span class="tbadge out">نفذ</span>':low?'<span class="tbadge low">قليل</span>':'<span class="tbadge ok">متوفر</span>';
+    const pct=profPct(p.buy,p.sell);
+    const pill=pct>=0?`<span class="profit-pill">${pct}%</span>`:`<span class="loss-pill">${pct}%</span>`;
     return `<tr>
       <td>${p.emoji||'📦'} ${p.name}</td>
       <td>${p.cat||'—'}</td>
       <td style="color:var(--red2)">${fmt(p.buy)}</td>
       <td style="color:var(--green2)">${fmt(p.sell)}</td>
-      <td><span class="profit-pill">${pct}%</span></td>
+      <td>${pill}</td>
       <td>${p.stgstock||0}</td>
       <td>${p.posstock||0}</td>
       <td>${badge}</td>
-      <td><div class="tbl-acts">
-        <button class="tbl-btn trans" onclick="openTransfer('${p.id}')">📦 نقل</button>
-        <button class="tbl-btn" onclick="openEditProd('${p.id}')">✏️</button>
-        <button class="tbl-btn del" onclick="deleteProd('${p.id}')">🗑️</button>
+      <td><div class="tacts">
+        <button class="tbtn tr" onclick="openTransfer('${p.id}')">📦 نقل</button>
+        <button class="tbtn" onclick="openEditProd('${p.id}')">✏️</button>
+        <button class="tbtn del" onclick="delProd('${p.id}')">🗑️</button>
       </div></td>
     </tr>`;
   }).join('');
 }
 
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 //  DEBTS
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════════════
 function renderDebts(){
-  const grid=document.getElementById('debt-grid');
+  const grid=document.getElementById('dgrid');
   const active=debts.filter(d=>(d.amount-d.paid)>0);
   document.getElementById('debt-total').textContent=fmt(active.reduce((s,d)=>s+(d.amount-d.paid),0));
-  if(!active.length){
-    grid.innerHTML='<div style="color:var(--text2);font-size:13px;padding:20px">✅ لا توجد ديون مستحقة</div>';
-    return;
-  }
+  if(!active.length){grid.innerHTML='<div style="color:var(--text2);padding:20px;font-size:13px">✅ لا ديون مستحقة</div>';return;}
   grid.innerHTML=active.map(d=>{
-    const remain=d.amount-d.paid;
-    const paidPct=Math.round(d.paid/d.amount*100)||0;
-    return `<div class="debt-card">
-      <div class="dc-head">
-        <div><div class="dc-name">${d.name}</div><div class="dc-phone">${d.phone||'—'}</div></div>
-        <div><div class="dc-amount">${fmt(remain)}<small>من أصل ${fmt(d.amount)}</small></div></div>
+    const rem=d.amount-d.paid,pct=Math.round(d.paid/d.amount*100)||0;
+    return `<div class="dcard">
+      <div class="dc-hd">
+        <div><div class="dc-nm">${d.name}</div><div class="dc-ph">${d.phone||'—'}</div></div>
+        <div><div class="dc-am">${fmt(rem)}<small>من ${fmt(d.amount)}</small></div></div>
       </div>
-      <div class="dc-prog"><div class="dc-prog-bar" style="width:${paidPct}%"></div></div>
+      <div class="dc-prog"><div class="dc-progbar" style="width:${pct}%"></div></div>
       ${d.note?`<div class="dc-note">${d.note}</div>`:''}
       <div class="dc-date">📅 ${d.date}</div>
       <div class="dc-acts">
-        <button class="dc-pay-btn" onclick="openPayDebt('${d.id}')">💵 دفعة</button>
-        <button class="dc-print-btn" onclick="printDebtReceipt('${d.id}')">🖨️</button>
-        <button class="dc-del-btn" onclick="delDebt('${d.id}')">🗑️</button>
+        <button class="dc-pay" onclick="openDebtPay('${d.id}')">💵 قبض</button>
+        <button class="dc-print" onclick="printDebtRcpt('${d.id}')">🖨️ سند</button>
+        <button class="dc-del" onclick="delDebt('${d.id}')">🗑️</button>
       </div>
     </div>`;
   }).join('');
 }
-
 function openAddDebt(){
-  ['md-name','md-phone','md-amount','md-note'].forEach(id=>document.getElementById(id).value='');
-  openModal('mo-debt');
+  ['md-id','md-name','md-phone','md-amt','md-note'].forEach(i=>document.getElementById(i).value='');
+  openM('mo-debt');
 }
 function saveDebt(){
   const name=document.getElementById('md-name').value.trim();
-  const amount=parseFloat(document.getElementById('md-amount').value)||0;
-  if(!name||!amount){showToast('❌ أدخل الاسم والمبلغ','err');return;}
-  debts.push({
-    id:uid(),name,
-    phone:document.getElementById('md-phone').value.trim(),
-    amount,paid:0,
-    note:document.getElementById('md-note').value.trim(),
-    date:new Date().toLocaleDateString('ar-IQ'),
-    items:[]
-  });
-  save(); renderDebts(); closeModal('mo-debt');
-  showToast('✅ تم تسجيل الدين');
+  const amt=+document.getElementById('md-amt').value||0;
+  if(!name||!amt){toast('❌ أدخل الاسم والمبلغ','err');return;}
+  const id=document.getElementById('md-id').value||uid();
+  debts.push({id,name,phone:document.getElementById('md-phone').value.trim(),amount:amt,paid:0,note:document.getElementById('md-note').value.trim(),date:today(),items:[]});
+  txLog.unshift({id:uid(),type:'debt_added',date:today(),time:now(),customer:name,phone:document.getElementById('md-phone').value.trim(),amount:amt,note:document.getElementById('md-note').value.trim()});
+  saveAll();renderDebts();closeM('mo-debt');toast('✅ تم تسجيل الدين');
 }
-function openPayDebt(id){
-  const d=debts.find(x=>x.id===id); if(!d)return;
-  document.getElementById('mpay-id').value=id;
-  document.getElementById('mpay-name').textContent=d.name;
-  document.getElementById('mpay-remain').textContent='المتبقي: '+fmt(d.amount-d.paid);
-  document.getElementById('mpay-amt').value='';
-  document.getElementById('mpay-note').value='';
-  openModal('mo-pay');
+function openDebtPay(id){
+  const d=debts.find(x=>x.id===id);if(!d)return;
+  document.getElementById('dp-id').value=id;
+  document.getElementById('dp-nm').textContent=d.name+' '+(d.phone?'| '+d.phone:'');
+  document.getElementById('dp-det').textContent='المستحق: '+fmt(d.amount-d.paid);
+  document.getElementById('dp-amt').value='';document.getElementById('dp-note').value='';
+  openM('mo-dpay');
 }
-function savePayment(){
-  const id=document.getElementById('mpay-id').value;
-  const d=debts.find(x=>x.id===id); if(!d)return;
-  const amt=parseFloat(document.getElementById('mpay-amt').value)||0;
-  if(!amt){showToast('❌ أدخل المبلغ','err');return;}
+function saveDebtPay(){
+  const id=document.getElementById('dp-id').value;
+  const d=debts.find(x=>x.id===id);if(!d)return;
+  const amt=+document.getElementById('dp-amt').value||0;
+  if(!amt){toast('❌ أدخل المبلغ','err');return;}
   d.paid=Math.min(d.amount,d.paid+amt);
-  save(); renderDebts(); closeModal('mo-pay');
-  if(d.paid>=d.amount) showToast('✅ تم سداد الدين كاملاً');
-  else showToast('✅ تم تسجيل الدفعة');
+  const note=document.getElementById('dp-note').value.trim();
+  txLog.unshift({id:uid(),type:'debt_pay',date:today(),time:now(),customer:d.name,phone:d.phone||'',amount:amt,note,debtId:id});
+  saveAll();renderDebts();closeM('mo-dpay');
+  toast(d.paid>=d.amount?'✅ تم سداد الدين كاملاً':'✅ تم تسجيل الدفعة');
+  // auto print receipt
+  printDebtReceiptData(d,amt,note);
 }
 function delDebt(id){
-  if(!confirm('حذف هذا الدين؟'))return;
-  debts=debts.filter(d=>d.id!==id);
-  save(); renderDebts(); showToast('🗑️ تم الحذف');
+  if(!confirm('حذف؟'))return;
+  debts=debts.filter(d=>d.id!==id);saveAll();renderDebts();toast('🗑️ تم');
 }
-function printDebtReceipt(id){
-  const d=debts.find(x=>x.id===id); if(!d)return;
-  const remain=d.amount-d.paid;
-  const extraRows=`
-    <div class="row"><span>المدفوع</span><span style="color:green">${d.paid.toLocaleString()} د.ع</span></div>
-    <div class="row" style="color:#c0392b"><span>المتبقي</span><span>${remain.toLocaleString()} د.ع</span></div>
-  `;
-  printReceiptHTML({
-    title:'سند دين',
-    customer:d.name,
-    items:(d.items||[]).length?d.items.map(i=>({name:i.name,qty:i.qty,price:i.sell*i.qty}))
-          :[{name:d.note||'دين مسجّل',qty:1,price:d.amount}],
-    disc:0,discPct:0,
+function printDebtRcpt(id){
+  const d=debts.find(x=>x.id===id);if(!d)return;
+  printDebtReceiptData(d,d.amount-d.paid,'');
+}
+function printDebtReceiptData(d,recvAmt,note){
+  printHTML({
+    title:'سند قبض — محل الزرقاني',
+    subtitle:'سند استلام دين',
+    rows:[
+      {l:'العميل',v:d.name},{l:'الهاتف',v:d.phone||'—'},
+      {l:'التاريخ',v:today()},{l:'المبلغ الكلي',v:fmt(d.amount)},
+      {l:'المسدَّد سابقاً',v:fmt(d.paid-recvAmt>0?d.paid-recvAmt:0)},
+      {l:'المستلم الآن',v:fmt(recvAmt),green:true},
+      {l:'المتبقي',v:fmt(Math.max(0,d.amount-d.paid)),red:true}
+    ],
+    items:(d.items||[]).map(i=>({n:i.name+'  ×'+i.qty,v:i.sell*i.qty})),
     grand:d.amount,
-    payLabel:'دَين',
-    note:'هاتف: '+(d.phone||'—'),
-    isDebt:true,
-    extraRows
+    foot:'تم استلام المبلغ — محل الزرقاني 🌡️',
+    note:note||d.note,
+    isReceipt:true
   });
 }
 
-// ══════════════════════════════════════
-//  MODAL HELPERS
-// ══════════════════════════════════════
-function openModal(id){ document.getElementById(id).classList.add('show'); }
-function closeModal(id){ document.getElementById(id).classList.remove('show'); }
-document.querySelectorAll('.overlay').forEach(o=>{
-  o.addEventListener('click',e=>{ if(e.target===o) closeModal(o.id); });
-});
-
-// ══════════════════════════════════════
-//  TOAST
-// ══════════════════════════════════════
-let toastTimer;
-function showToast(msg,type=''){
-  const t=document.getElementById('toast');
-  t.textContent=msg;
-  t.className='toast'+(type?' '+type:'')+' show';
-  clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>t.classList.remove('show'),2600);
+// ══════════════════════════════════════════════════════════
+//  SUPPLIERS
+// ══════════════════════════════════════════════════════════
+function renderSuppliers(){
+  const grid=document.getElementById('sup-grid');
+  const stats=document.getElementById('sup-stats');
+  const totalOwed=suppliers.reduce((s,x)=>s+(x.balance||0),0);
+  stats.innerHTML=`
+    <div class="scard b"><div class="sv">${suppliers.length}</div><div class="sl">عدد الموردين</div></div>
+    <div class="scard r"><div class="sv">${fmt(totalOwed)}</div><div class="sl">إجمالي المستحق للموردين</div></div>`;
+  if(!suppliers.length){grid.innerHTML='<div style="color:var(--text2);font-size:13px;padding:20px">لا يوجد موردون — أضف مورداً أولاً</div>';return;}
+  grid.innerHTML=suppliers.map(s=>`
+    <div class="sup-card">
+      <div class="sc-hd">
+        <div><div class="sc-nm">🏪 ${s.name}</div><div class="sc-ph">${s.phone||'—'}</div></div>
+        <div><div class="sc-bal">${fmt(s.balance||0)}<small>مستحق عليّ</small></div></div>
+      </div>
+      ${s.note?`<div class="sc-note">${s.note}</div>`:''}
+      <div class="sc-acts">
+        <button class="sc-pay" onclick="openSupBuy('${s.id}')">🛒 شراء</button>
+        <button class="sc-pay" style="background:var(--blue)" onclick="openSupPay('${s.id}')">💵 سداد</button>
+        <button class="sc-log" onclick="openSupLog('${s.id}')">📜 سجل</button>
+        <button class="sc-del" onclick="delSupplier('${s.id}')">🗑️</button>
+      </div>
+    </div>`).join('');
+}
+function openAddSupplier(){
+  ['ms-id','ms-name','ms-phone','ms-note'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('mo-sup-ttl').textContent='إضافة مورد';
+  openM('mo-sup');
+}
+function saveSupplier(){
+  const name=document.getElementById('ms-name').value.trim();
+  if(!name){toast('❌ أدخل الاسم','err');return;}
+  const id=document.getElementById('ms-id').value||uid();
+  const existing=suppliers.find(x=>x.id===id);
+  const data={id,name,phone:document.getElementById('ms-phone').value.trim(),note:document.getElementById('ms-note').value.trim(),balance:existing?existing.balance:0};
+  if(existing){const i=suppliers.findIndex(x=>x.id===id);suppliers[i]=data;}
+  else suppliers.push(data);
+  saveAll();renderSuppliers();closeM('mo-sup');toast('✅ تم');
+}
+function delSupplier(id){
+  if(!confirm('حذف المورد؟'))return;
+  suppliers=suppliers.filter(s=>s.id!==id);saveAll();renderSuppliers();toast('🗑️ تم');
+}
+function openSupBuy(id){
+  const s=suppliers.find(x=>x.id===id);if(!s)return;
+  document.getElementById('sb-id').value=id;
+  document.getElementById('sb-nm').textContent='🏪 '+s.name;
+  document.getElementById('sb-det').textContent='الرصيد الحالي: '+fmt(s.balance||0);
+  ['sb-amt','sb-note','sb-paid-amt'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('sb-paid').value='yes';
+  document.getElementById('sb-partial-wrap').style.display='none';
+  openM('mo-sup-buy');
+}
+document.getElementById('sb-paid').onchange=function(){
+  document.getElementById('sb-partial-wrap').style.display=this.value==='partial'?'flex':'none';
+};
+function saveSupBuy(){
+  const id=document.getElementById('sb-id').value;
+  const s=suppliers.find(x=>x.id===id);if(!s)return;
+  const amt=+document.getElementById('sb-amt').value||0;
+  if(!amt){toast('❌ أدخل المبلغ','err');return;}
+  const paidOpt=document.getElementById('sb-paid').value;
+  let paidNow=paidOpt==='yes'?amt:paidOpt==='partial'?(+document.getElementById('sb-paid-amt').value||0):0;
+  const owed=amt-paidNow;
+  s.balance=(s.balance||0)+owed;
+  const note=document.getElementById('sb-note').value.trim();
+  txLog.unshift({id:uid(),type:'purchase',date:today(),time:now(),supplier:s.name,supplierId:id,amount:amt,paidNow,owed,note});
+  saveAll();renderSuppliers();closeM('mo-sup-buy');
+  toast(`✅ مشتريات ${fmt(amt)} — مستحق ${fmt(owed)}`);
+}
+function openSupPay(id){
+  const s=suppliers.find(x=>x.id===id);if(!s)return;
+  document.getElementById('sp-id').value=id;
+  document.getElementById('sp-nm').textContent='🏪 '+s.name;
+  document.getElementById('sp-det').textContent='المستحق: '+fmt(s.balance||0);
+  document.getElementById('sp-amt').value='';document.getElementById('sp-note').value='';
+  openM('mo-sup-pay');
+}
+function saveSupPay(){
+  const id=document.getElementById('sp-id').value;
+  const s=suppliers.find(x=>x.id===id);if(!s)return;
+  const amt=+document.getElementById('sp-amt').value||0;
+  if(!amt){toast('❌ أدخل المبلغ','err');return;}
+  s.balance=Math.max(0,(s.balance||0)-amt);
+  const note=document.getElementById('sp-note').value.trim();
+  txLog.unshift({id:uid(),type:'sup_pay',date:today(),time:now(),supplier:s.name,supplierId:id,amount:amt,note});
+  saveAll();renderSuppliers();closeM('mo-sup-pay');toast('✅ تم التسديد');
+}
+function openSupLog(id){
+  const s=suppliers.find(x=>x.id===id);if(!s)return;
+  document.getElementById('sup-log-ttl').textContent='سجل: '+s.name;
+  const logs=txLog.filter(t=>t.supplierId===id);
+  const body=document.getElementById('sup-log-body');
+  if(!logs.length){body.innerHTML='<div style="color:var(--text2);font-size:12px">لا سجلات</div>';openM('mo-sup-log');return;}
+  body.innerHTML=logs.map(t=>{
+    const isP=t.type==='purchase',isPay=t.type==='sup_pay';
+    return `<div style="background:var(--bg2);border-radius:7px;padding:8px 10px;font-size:11px;">
+      <div style="display:flex;justify-content:space-between;font-weight:700;">
+        <span>${isP?'🛒 شراء':isPay?'💵 سداد':'📋 عملية'}</span>
+        <span style="color:${isP?'var(--red2)':'var(--green2)'};">${isP?'+':'-'}${fmt(t.amount)}</span>
+      </div>
+      <div style="color:var(--text2);margin-top:3px;">${t.date} ${t.time||''}</div>
+      ${t.note?`<div style="color:var(--text2);margin-top:2px;">${t.note}</div>`:''}
+      ${isP&&t.owed>0?`<div style="color:var(--gold2);margin-top:2px;">مستحق: ${fmt(t.owed)}</div>`:''}
+    </div>`;
+  }).join('');
+  openM('mo-sup-log');
 }
 
-// ══════════════════════════════════════
+// ══════════════════════════════════════════════════════════
+//  CUSTOMERS
+// ══════════════════════════════════════════════════════════
+function getCustomers(){
+  const map={};
+  txLog.filter(t=>t.type==='sale'&&t.customer&&t.customer!=='عميل نقدي').forEach(t=>{
+    if(!map[t.customer])map[t.customer]={name:t.customer,phone:t.phone||'',total:0,count:0,profit:0};
+    map[t.customer].total+=t.amount;
+    map[t.customer].count++;
+    map[t.customer].profit+=t.profit||0;
+    if(t.phone)map[t.customer].phone=t.phone;
+  });
+  debts.forEach(d=>{
+    if(!map[d.name])map[d.name]={name:d.name,phone:d.phone||'',total:0,count:0,profit:0};
+    if(d.phone)map[d.name].phone=d.phone;
+  });
+  return Object.values(map);
+}
+function renderCustomers(){
+  const q=(document.getElementById('cust-srch').value||'').trim().toLowerCase();
+  const grid=document.getElementById('cust-grid');
+  let list=getCustomers().filter(c=>!q||c.name.toLowerCase().includes(q)||c.phone.includes(q));
+  if(!list.length){grid.innerHTML='<div style="color:var(--text2);font-size:13px;padding:20px">لا يوجد عملاء مسجلون بعد</div>';return;}
+  grid.innerHTML=list.map(c=>`
+    <div class="cust-card" onclick="openCustDet('${c.name.replace(/'/g,"\\'")}')">
+      <div class="cc-nm">👤 ${c.name}</div>
+      <div class="cc-ph">📞 ${c.phone||'—'}</div>
+      <div class="cc-stats">
+        <div class="cc-stat"><div class="csv" style="color:var(--accent2)">${fmt(c.total)}</div><div class="csl">إجمالي المشتريات</div></div>
+        <div class="cc-stat"><div class="csv">${c.count}</div><div class="csl">عدد الفواتير</div></div>
+        <div class="cc-stat"><div class="csv" style="color:var(--green2)">${fmt(c.profit)}</div><div class="csl">أرباحي منه</div></div>
+      </div>
+    </div>`).join('');
+}
+function openCustDet(name){
+  document.getElementById('cust-det-ttl').textContent='سجل: '+name;
+  const logs=txLog.filter(t=>(t.customer===name)||(debts.find(d=>d.name===name)));
+  const custTx=txLog.filter(t=>t.customer===name);
+  const body=document.getElementById('cust-det-body');
+  if(!custTx.length){body.innerHTML='<div style="color:var(--text2);font-size:12px">لا سجلات لهذا العميل</div>';openM('mo-cust-det');return;}
+  body.innerHTML=custTx.map(t=>`
+    <div style="background:var(--bg2);border-radius:7px;padding:8px 10px;font-size:11px;">
+      <div style="display:flex;justify-content:space-between;font-weight:700;">
+        <span>${t.type==='sale'?'🧾 فاتورة':'📋 '+t.type}</span>
+        <span style="color:var(--accent2)">${fmt(t.amount)}</span>
+      </div>
+      <div style="color:var(--text2);margin-top:2px;">${t.date} | ${t.payLabel||''}</div>
+      ${t.items?`<div style="color:var(--text2);margin-top:2px;">${t.items.map(i=>i.name+'×'+i.qty).join('، ')}</div>`:''}
+      ${t.note?`<div style="color:var(--text2);margin-top:2px;">${t.note}</div>`:''}
+    </div>`).join('');
+  openM('mo-cust-det');
+}
+
+// ══════════════════════════════════════════════════════════
+//  REPORTS
+// ══════════════════════════════════════════════════════════
+function renderReports(){
+  const dates=Object.keys(dailyRpt).sort().reverse();
+  const todayKey=today();
+  const tod=dailyRpt[todayKey]||{sales:0,cost:0,profit:0,loss:0,count:0};
+  const allTime={sales:0,profit:0,loss:0,count:0};
+  dates.forEach(d=>{const r=dailyRpt[d];allTime.sales+=r.sales;allTime.profit+=r.profit;allTime.loss+=r.loss;allTime.count+=r.count;});
+  const supOwed=suppliers.reduce((s,x)=>s+(x.balance||0),0);
+  const debtOwed=debts.reduce((s,d)=>s+(d.amount-d.paid),0);
+
+  document.getElementById('rpt-summary').innerHTML=`
+    <div class="scard o"><div class="sv">${fmt(tod.sales)}</div><div class="sl">مبيعات اليوم</div></div>
+    <div class="scard g"><div class="sv">${fmt(tod.profit)}</div><div class="sl">أرباح اليوم</div></div>
+    <div class="scard r"><div class="sv">${fmt(tod.loss)}</div><div class="sl">خسائر اليوم</div></div>
+    <div class="scard b"><div class="sv">${fmt(allTime.sales)}</div><div class="sl">إجمالي المبيعات</div></div>
+    <div class="scard g"><div class="sv">${fmt(allTime.profit)}</div><div class="sl">إجمالي الأرباح</div></div>
+    <div class="scard r"><div class="sv">${fmt(allTime.loss)}</div><div class="sl">إجمالي الخسائر</div></div>
+    <div class="scard r"><div class="sv">${fmt(supOwed)}</div><div class="sl">مستحق للموردين</div></div>
+    <div class="scard p"><div class="sv">${fmt(debtOwed)}</div><div class="sl">ديون العملاء</div></div>
+  `;
+  if(!dates.length){document.getElementById('rpt-body').innerHTML='<tr><td colspan="7" class="empty-tbl">لا توجد بيانات بعد</td></tr>';return;}
+  document.getElementById('rpt-body').innerHTML=dates.map(date=>{
+    const r=dailyRpt[date];
+    const net=r.profit-r.loss;
+    const pct=r.sales>0?Math.round(net/r.sales*100):0;
+    const pill=pct>=0?`<span class="profit-pill">${pct}%</span>`:`<span class="loss-pill">${pct}%</span>`;
+    return `<tr>
+      <td>${date}</td>
+      <td style="color:var(--accent2)">${fmt(r.sales)}</td>
+      <td style="color:var(--text2)">${fmt(r.cost)}</td>
+      <td style="color:var(--green2)">${fmt(r.profit)}</td>
+      <td style="color:var(--red2)">${fmt(r.loss)}</td>
+      <td>${r.count}</td>
+      <td>${pill}</td>
+    </tr>`;
+  }).join('');
+}
+function printReport(){
+  const dates=Object.keys(dailyRpt).sort().reverse();
+  const supOwed=suppliers.reduce((s,x)=>s+(x.balance||0),0);
+  const debtOwed=debts.reduce((s,d)=>s+(d.amount-d.paid),0);
+  const w=window.open('','_blank','width=700,height=900');
+  w.document.write(`<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8">
+  <style>body{font-family:Arial;padding:20px;font-size:12px;}h1{text-align:center;font-size:18px;margin-bottom:4px;}
+  .sub{text-align:center;color:#666;margin-bottom:14px;font-size:11px;}
+  table{width:100%;border-collapse:collapse;margin-bottom:16px;}
+  th{background:#222;color:#fff;padding:7px 10px;text-align:right;}
+  td{padding:6px 10px;border-bottom:1px solid #ddd;font-size:11px;}
+  .summary{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;}
+  .sc{flex:1;min-width:120px;background:#f5f5f5;border-radius:6px;padding:8px 10px;}
+  .sc .v{font-size:16px;font-weight:bold;} .sc .l{font-size:10px;color:#888;}
+  </style></head><body>
+  <h1>🌡️ محل الزرقاني — تقرير المبيعات</h1>
+  <div class="sub">تاريخ الطباعة: ${now()}</div>
+  <div class="summary">
+    <div class="sc"><div class="v">${fmt(Object.values(dailyRpt).reduce((s,r)=>s+r.sales,0))}</div><div class="l">إجمالي المبيعات</div></div>
+    <div class="sc"><div class="v" style="color:green">${fmt(Object.values(dailyRpt).reduce((s,r)=>s+r.profit,0))}</div><div class="l">إجمالي الأرباح</div></div>
+    <div class="sc"><div class="v" style="color:red">${fmt(supOwed)}</div><div class="l">مستحق للموردين</div></div>
+    <div class="sc"><div class="v" style="color:#e07b2a">${fmt(debtOwed)}</div><div class="l">ديون العملاء</div></div>
+  </div>
+  <table><thead><tr><th>التاريخ</th><th>المبيعات</th><th>الربح</th><th>الخسارة</th><th>الفواتير</th><th>نسبة الربح</th></tr></thead>
+  <tbody>${dates.map(d=>{
+    const r=dailyRpt[d];const net=r.profit-r.loss;const pct=r.sales>0?Math.round(net/r.sales*100):0;
+    return `<tr><td>${d}</td><td>${fmt(r.sales)}</td><td style="color:green">${fmt(r.profit)}</td><td style="color:red">${fmt(r.loss)}</td><td>${r.count}</td><td>${pct}%</td></tr>`;
+  }).join('')}</tbody></table>
+  </body></html>`);
+  w.document.close();w.focus();setTimeout(()=>w.print(),400);
+}
+
+// ══════════════════════════════════════════════════════════
+//  TX LOG
+// ══════════════════════════════════════════════════════════
+function renderTxLog(){
+  const q=(document.getElementById('tx-srch').value||'').trim().toLowerCase();
+  const filter=document.getElementById('tx-filter').value;
+  let list=txLog.filter(t=>{
+    const mf=filter==='all'||t.type===filter;
+    const mq=!q||(t.customer||'').toLowerCase().includes(q)||(t.supplier||'').toLowerCase().includes(q)||(t.note||'').toLowerCase().includes(q);
+    return mf&&mq;
+  });
+  const tbody=document.getElementById('tx-body');
+  if(!list.length){tbody.innerHTML='<tr><td colspan="6" class="empty-tbl">لا توجد سجلات</td></tr>';return;}
+  const typeLabel={sale:'🧾 بيع',purchase:'🛒 شراء',debt_pay:'💵 سداد دين',sup_pay:'💳 دفع مورد',debt_added:'📋 دين جديد'};
+  tbody.innerHTML=list.slice(0,200).map(t=>`<tr>
+    <td style="font-size:10px;white-space:nowrap">${t.date}<br><span style="color:var(--text2)">${t.time||''}</span></td>
+    <td>${typeLabel[t.type]||t.type}</td>
+    <td>${t.customer||t.supplier||'—'}<br><span style="font-size:9px;color:var(--text2)">${t.phone||''}</span></td>
+    <td style="font-weight:700;color:${t.type==='sale'?'var(--green2)':t.type==='purchase'?'var(--red2)':'var(--accent2)'}">${fmt(t.amount)}</td>
+    <td style="font-size:10px;color:var(--text2);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.note||t.items&&t.items.map(i=>i.name+'×'+i.qty).join('، ')||'—'}</td>
+    <td><div class="tacts">
+      ${t.type==='sale'?`<button class="tbtn" onclick="openEditTx('${t.id}')">✏️</button><button class="tbtn" onclick="reprintTx('${t.id}')">🖨️</button>`:''}
+      <button class="tbtn del" onclick="delTx('${t.id}')">🗑️</button>
+    </div></td>
+  </tr>`).join('');
+}
+function openEditTx(id){
+  const t=txLog.find(x=>x.id===id);if(!t)return;
+  document.getElementById('etx-id').value=id;
+  document.getElementById('etx-nm').textContent=(t.customer||'')+'  '+t.date;
+  document.getElementById('etx-det').textContent='المبلغ الحالي: '+fmt(t.amount);
+  document.getElementById('etx-amt').value=t.amount;
+  document.getElementById('etx-reason').value='';
+  openM('mo-edit-tx');
+}
+function saveEditTx(){
+  const id=document.getElementById('etx-id').value;
+  const t=txLog.find(x=>x.id===id);if(!t)return;
+  const newAmt=+document.getElementById('etx-amt').value||0;
+  const reason=document.getElementById('etx-reason').value.trim();
+  const oldAmt=t.amount;
+  t.amount=newAmt;t.edited=true;t.editReason=reason;t.editTime=now();
+  // adjust daily report
+  if(t.type==='sale'){
+    const dr=dailyRpt[t.date];
+    if(dr){dr.sales+=newAmt-oldAmt;}
+  }
+  saveAll();renderTxLog();renderReports();closeM('mo-edit-tx');toast('✅ تم تعديل العملية');
+}
+function reprintTx(id){
+  const t=txLog.find(x=>x.id===id);if(!t)return;
+  if(t.type==='sale'){
+    printHTML({
+      title:'فاتورة بيع — محل الزرقاني',subtitle:'نظام تبريد السيارات',
+      rows:[{l:'العميل',v:t.customer},{l:'الهاتف',v:t.phone||'—'},{l:'التاريخ',v:t.date},{l:'الدفع',v:t.payLabel||'—'}],
+      items:(t.items||[]).map(i=>({n:i.name+'  ×'+i.qty,v:i.sell*i.qty})),
+      extra:t.disc>0?[{l:'خصم',v:-t.disc,green:true}]:[],
+      grand:t.amount,
+      foot:'شكراً لثقتك بمحل الزرقاني 🌡️',note:t.note
+    });
+  }
+}
+function delTx(id){if(!confirm('حذف؟'))return;txLog=txLog.filter(t=>t.id!==id);saveAll();renderTxLog();toast('🗑️ تم');}
+
+// ══════════════════════════════════════════════════════════
+//  PRINT ENGINE
+// ══════════════════════════════════════════════════════════
+function printHTML({title,subtitle,rows,items,extra,grand,foot,note,isReceipt}){
+  const w=window.open('','_blank','width=440,height=720');
+  w.document.write(`<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:Arial,sans-serif;padding:18px;font-size:12px;color:#111;max-width:360px;margin:auto;}
+    .top{text-align:center;margin-bottom:10px;}
+    .top h1{font-size:18px;font-weight:900;}
+    .top .sub{font-size:10px;color:#777;margin-top:2px;}
+    hr{border:none;border-top:1px dashed #bbb;margin:8px 0;}
+    .row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px dotted #eee;font-size:11px;}
+    .row.grn{color:green;}.row.red{color:red;}
+    .row.grd{font-weight:bold;font-size:15px;border:none;padding-top:8px;}
+    .foot{text-align:center;margin-top:14px;font-size:10px;color:#888;}
+    .stamp{display:inline-block;background:#111;color:#fff;padding:3px 8px;border-radius:4px;font-size:10px;margin-top:6px;}
+    .stamp.red{background:#c0392b;}
+    @media print{body{padding:4px;}}
+  </style></head><body>
+  <div class="top"><h1>🌡️ محل الزرقاني</h1><div class="sub">${subtitle||''}</div></div>
+  <hr>
+  ${rows.map(r=>`<div class="row ${r.green?'grn':r.red?'red':''}">`+
+    `<span>${r.l}</span><span>${typeof r.v==='number'?fmt(r.v):r.v}</span></div>`).join('')}
+  <hr>
+  ${(items||[]).map(i=>`<div class="row"><span>${i.n}</span><span>${fmt(i.v)}</span></div>`).join('')}
+  ${(extra||[]).map(e=>`<div class="row ${e.green?'grn':'red'}"><span>${e.l}</span><span>${fmt(e.v)}</span></div>`).join('')}
+  <div class="row grd"><span>الإجمالي</span><span>${fmt(grand)}</span></div>
+  ${note?`<hr><div style="font-size:10px;color:#555">ملاحظة: ${note}</div>`:''}
+  <div class="foot">${foot||''}${isReceipt?'<br><span class="stamp">سند قبض رسمي</span>':''}</div>
+  </body></html>`);
+  w.document.close();w.focus();setTimeout(()=>w.print(),400);
+}
+
+// ══════════════════════════════════════════════════════════
+//  TOAST & MODAL HELPERS
+// ══════════════════════════════════════════════════════════
+let _tt;
+function toast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast on'+(type?' '+type:'');
+  clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('on'),2600);
+}
+function openM(id){document.getElementById(id).classList.add('on');}
+function closeM(id){document.getElementById(id).classList.remove('on');}
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeM(o.id);}));
+
+// ══════════════════════════════════════════════════════════
 //  INIT
-// ══════════════════════════════════════
-function renderAll(){ renderProds(); renderStorage(); renderDebts(); }
+// ══════════════════════════════════════════════════════════
+function renderAll(){
+  renderProds();renderStorage();renderDebts();
+  renderSuppliers();renderCustomers();renderReports();renderTxLog();
+}
 </script>
 </body>
 </html>
